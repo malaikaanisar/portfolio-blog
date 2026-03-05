@@ -1,5 +1,6 @@
 import { Analytics } from '@vercel/analytics/react';
 import 'focus-visible';
+import { DefaultSeo } from 'next-seo';
 import { ThemeProvider } from 'next-themes';
 import { AppProps } from 'next/app';
 import { GeistSans } from 'geist/font/sans';
@@ -10,6 +11,8 @@ import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
 import '../styles/index.css';
 import '../styles/prism.css';
+
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
 
 function usePrevious(value: string) {
   let ref = useRef<string>();
@@ -26,6 +29,54 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   return (
     <>
+      <DefaultSeo
+        titleTemplate="%s — Malaika Nisar"
+        defaultTitle="Malaika Nisar — Digital Marketer"
+        description="Malaika Nisar is a results-driven Digital Marketer specializing in social media marketing, content strategy, and data-driven campaigns."
+        canonical={`${SITE_URL}${router.asPath}`}
+        openGraph={{
+          type: 'website',
+          locale: 'en_US',
+          url: `${SITE_URL}${router.asPath}`,
+          siteName: 'Malaika Nisar',
+          title: 'Malaika Nisar — Digital Marketer',
+          description:
+            'Malaika Nisar is a results-driven Digital Marketer specializing in social media marketing, content strategy, and data-driven campaigns.',
+          images: [
+            {
+              url: `${SITE_URL}/api/og?title=Malaika+Nisar&description=Digital+Marketer`,
+              width: 1200,
+              height: 630,
+              alt: 'Malaika Nisar — Digital Marketer',
+              type: 'image/png',
+            },
+          ],
+        }}
+        twitter={{
+          handle: '@malaikanisar',
+          cardType: 'summary_large_image',
+        }}
+        additionalMetaTags={[
+          { name: 'author', content: 'Malaika Nisar' },
+          {
+            name: 'keywords',
+            content:
+              'digital marketing, social media marketing, content strategy, SEO, brand management, Malaika Nisar, digital marketer Pakistan',
+          },
+          { name: 'robots', content: 'index, follow' },
+          { name: 'googlebot', content: 'index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1' },
+        ]}
+        additionalLinkTags={[
+          { rel: 'icon', href: '/favicon/favicon.ico' },
+          { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
+          { rel: 'manifest', href: '/favicon/site.webmanifest' },
+          {
+            rel: 'alternate',
+            type: 'application/rss+xml',
+            href: `${SITE_URL}/api/rss.xml`,
+          },
+        ]}
+      />
       <ThemeProvider attribute="class">
         <div className={`${GeistSans.className}`}>
           <div className="fixed inset-0 flex justify-center sm:px-8">

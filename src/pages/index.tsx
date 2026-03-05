@@ -1,39 +1,86 @@
 import { compareDesc } from 'date-fns';
 import { GetStaticProps } from 'next';
 import { NextSeo } from 'next-seo';
+import Head from 'next/head';
 
 import { Container } from '../components/Container';
 import { PageTitle } from '../components/PageTitle';
 import { Photos } from '../components/Photos';
 import { Resume } from '../components/Resume';
 import { SocialLink } from '../components/SocialLink';
-import { NotePreview } from '../components/notes/NotePreview';
+import { BlogPreview } from '../components/blogs/BlogPreview';
 import { About, Name, SocialMedia } from '../data/lifeApi';
-import { Note, notesApi } from '../lib/notesApi';
+import { BlogPost, notesApi } from '../lib/notesApi';
 
-const seoTitle = 'Bartosz Jarocki';
+const seoTitle = 'Malaika Nisar';
 const seoDescription =
-  'A passionate software engineer with an eye for details based in Wrocław, Poland.';
+  'Digital Marketer specializing in social media marketing, content strategy, and data-driven campaigns. Based in Rahim Yar Khan, Pakistan.';
+
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
 
 type Props = {
-  latestNotes: Note[];
+  latestBlogs: BlogPost[];
 };
 
-export default function Home({ latestNotes }: Props) {
+export default function Home({ latestBlogs }: Props) {
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Malaika Nisar',
+    url: SITE_URL,
+    description: seoDescription,
+    author: {
+      '@type': 'Person',
+      name: 'Malaika Nisar',
+    },
+  };
+
+  const personJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Malaika Nisar',
+    url: SITE_URL,
+    jobTitle: 'Digital Marketer',
+    description: seoDescription,
+    email: 'malaikaanisar2521@gmail.com',
+    sameAs: ['https://www.linkedin.com/in/malaikaanisar'],
+    knowsAbout: [
+      'Digital Marketing',
+      'Social Media Marketing',
+      'Content Strategy',
+      'SEO',
+      'Brand Management',
+      'Paid Advertising',
+    ],
+  };
+
   return (
     <>
       <NextSeo
         title={seoTitle}
         description={seoDescription}
-        canonical={`${process.env.NEXT_PUBLIC_URL}`}
+        canonical={SITE_URL}
         openGraph={{
           images: [
             {
-              url: `${process.env.NEXT_PUBLIC_URL}/api/og?title=${seoTitle}&description=${seoDescription}`,
+              url: `${SITE_URL}/api/og?title=${encodeURIComponent(seoTitle)}&description=${encodeURIComponent(seoDescription)}`,
+              width: 1200,
+              height: 630,
+              alt: seoTitle,
             },
           ],
         }}
       />
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+      </Head>
       <Container className="mt-9">
         <div className="max-w-2xl">
           <PageTitle>{Name}</PageTitle>
@@ -54,8 +101,8 @@ export default function Home({ latestNotes }: Props) {
       <Container className="mt-12">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
-            {latestNotes.map((blogPost) => (
-              <NotePreview key={blogPost.slug} note={blogPost} dense />
+            {latestBlogs.map((blogPost) => (
+              <BlogPreview key={blogPost.slug} post={blogPost} dense />
             ))}
           </div>
           <div className="lg:ml-auto space-y-10 lg:pl-16 xl:pl-24">
@@ -70,10 +117,10 @@ export default function Home({ latestNotes }: Props) {
 const NEWEST_POSTS_TO_DISPLAY = 5;
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const latestNotes = await notesApi.getNotes('desc', NEWEST_POSTS_TO_DISPLAY);
+  const latestBlogs = await notesApi.getNotes('desc', NEWEST_POSTS_TO_DISPLAY);
 
   return {
-    props: { latestNotes },
+    props: { latestBlogs },
     revalidate: 10,
   };
 };

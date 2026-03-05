@@ -6,27 +6,32 @@ import { ProjectCard } from '../components/ProjectCard';
 import { MyCurrentProjects, MyPastProjects } from '../data/lifeApi';
 import { ANIMATION_FROM_PROPS, ANIMATION_TO_PROPS } from '../lib/animation';
 
-const seoTitle = 'Creating';
-const seoDescription = 'Marketing campaigns and projects I\'ve worked on.';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
 
-export default function Creating() {
+const seoTitle = 'Work — Malaika Nisar';
+const seoDescription = 'Professional work experience and digital marketing projects by Malaika Nisar.';
+
+export default function Work() {
   return (
     <>
       <NextSeo
         title={seoTitle}
         description={seoDescription}
-        canonical={`${process.env.NEXT_PUBLIC_URL}/creating`}
+        canonical={`${SITE_URL}/work`}
         openGraph={{
           images: [
             {
-              url: `${process.env.NEXT_PUBLIC_URL}/api/og?title=${seoTitle}&description=${seoDescription}`,
+              url: `${SITE_URL}/api/og?title=${encodeURIComponent(seoTitle)}&description=${encodeURIComponent(seoDescription)}`,
+              width: 1200,
+              height: 630,
+              alt: seoTitle,
             },
           ],
         }}
       />
       <PageLayout
-        title="Marketing campaigns and projects I've worked on."
-        intro="A list of campaigns and projects I've been involved with."
+        title="My work experience and projects in digital marketing."
+        intro="A showcase of my professional experience and the campaigns I've been involved with."
       >
         <h2 className="text-2xl font-bold tracking-tight">Now</h2>
         <p className="mt-2 text-base">Projects I currently work on.</p>

@@ -3,17 +3,17 @@ import { motion } from 'framer-motion';
 import React from 'react';
 
 import { formatDate } from '../../lib/date';
-import { Note } from '../../lib/notesApi';
+import { BlogPost } from '../../lib/notesApi';
 import { Card } from '../Card';
 import { ANIMATION_FROM_PROPS, ANIMATION_TO_PROPS } from '../../lib/animation';
 
 
 interface Props {
-  note: Note;
+  post: BlogPost;
   dense?: boolean;
 }
 
-export const NotePreview = ({ note, dense }: Props) => {
+export const BlogPreview = ({ post, dense }: Props) => {
   return (
     <motion.div
       initial={ANIMATION_FROM_PROPS}
@@ -22,21 +22,21 @@ export const NotePreview = ({ note, dense }: Props) => {
     >
       <article className="md:grid md:grid-cols-4 md:items-baseline">
         <Card className="md:col-span-3">
-          <Card.Title href={`/notes/${note.slug}`}>{note.title}</Card.Title>
+          <Card.Title href={`/blogs/${post.slug}`}>{post.title}</Card.Title>
           <Card.Eyebrow
             as="time"
-            dateTime={note.publishedAt}
+            dateTime={post.publishedAt}
             className={clsx(!dense && 'md:hidden')}
             decorate
           >
-            {formatDate(note.publishedAt)}
+            {formatDate(post.publishedAt)}
           </Card.Eyebrow>
-          <Card.Description>{note.description}</Card.Description>
-          <Card.Cta>Read note</Card.Cta>
+          <Card.Description>{post.description}</Card.Description>
+          <Card.Cta>Read blog post</Card.Cta>
         </Card>
         {!dense && (
-          <Card.Eyebrow as="time" dateTime={note.publishedAt} className="mt-1 hidden md:block">
-            {formatDate(note.publishedAt)}
+          <Card.Eyebrow as="time" dateTime={post.publishedAt} className="mt-1 hidden md:block">
+            {formatDate(post.publishedAt)}
           </Card.Eyebrow>
         )}
       </article>

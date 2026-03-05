@@ -17,11 +17,51 @@ const config = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {
         source: '/blog/:slug*',
-        destination: '/notes/:slug*',
+        destination: '/blogs/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/notes/:slug*',
+        destination: '/blogs/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/creating',
+        destination: '/work',
+        permanent: true,
+      },
+      {
+        source: '/uses',
+        destination: '/tools',
         permanent: true,
       },
     ];

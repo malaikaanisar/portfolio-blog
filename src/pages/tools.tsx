@@ -5,27 +5,32 @@ import { Tool } from '../components/tools/Tool';
 import { ToolsSection } from '../components/tools/ToolsSection';
 import { Tools } from '../data/lifeApi';
 
-const seoTitle = 'Uses';
-const seoDescription = 'Software I use, gadgets I love, and other things I recommend.';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
 
-export default function Uses() {
+const seoTitle = 'Tools — Malaika Nisar';
+const seoDescription = 'Marketing tools, platforms, and software recommended by Malaika Nisar for digital marketing success.';
+
+export default function ToolsPage() {
   return (
     <>
       <NextSeo
         title={seoTitle}
         description={seoDescription}
-        canonical={`${process.env.NEXT_PUBLIC_URL}/uses`}
+        canonical={`${SITE_URL}/tools`}
         openGraph={{
           images: [
             {
-              url: `${process.env.NEXT_PUBLIC_URL}/api/og?title=${seoTitle}&description=${seoDescription}`,
+              url: `${SITE_URL}/api/og?title=${encodeURIComponent(seoTitle)}&description=${encodeURIComponent(seoDescription)}`,
+              width: 1200,
+              height: 630,
+              alt: seoTitle,
             },
           ],
         }}
       />
       <PageLayout
-        title="Software I use, gadgets I love, and other things I recommend."
-        intro="Here's a big list of all of my favorite stuff."
+        title="Tools I use, platforms I love, and other things I recommend."
+        intro="Here's a list of all the marketing tools and platforms I use."
       >
         <div className="space-y-20">
           {Object.entries(Tools).map(([title, tools]) => (

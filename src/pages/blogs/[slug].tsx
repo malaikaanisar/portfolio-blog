@@ -4,22 +4,24 @@ import Prism from 'prismjs';
 import { useEffect } from 'react';
 
 import { XIcon } from '../../components/icons/XIcon';
-import { NoteLayout } from '../../components/notes/NoteLayout';
+import { BlogLayout } from '../../components/blogs/BlogLayout';
 import { NotionBlockRenderer } from '../../components/notion/NotionBlockRenderer';
-import { Note as NoteType, notesApi } from '../../lib/notesApi';
+import { BlogPost, notesApi } from '../../lib/notesApi';
 
 type Props = {
-  note: NoteType;
+  note: BlogPost;
   noteContent: any[];
 };
 
-export default function Note({
-  note: { title, description, createdAt, slug },
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+
+export default function Blog({
+  note: { title, description, createdAt, slug, tags, coverImage },
   noteContent,
   previousPathname,
 }: Props & { previousPathname: string }) {
-  const url = `${process.env.NEXT_PUBLIC_URL}/notes/${slug}`;
-  const openGraphImageUrl = `${process.env.NEXT_PUBLIC_URL}/api/og?title=${title}&description=${description}`;
+  const url = `${SITE_URL}/blogs/${slug}`;
+  const openGraphImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`;
 
   useEffect(() => {
     Prism.highlightAll();
@@ -28,11 +30,24 @@ export default function Note({
   return (
     <>
       <NextSeo
-        title={title}
+        title={`${title} — Malaika Nisar`}
         description={description}
         canonical={url}
         openGraph={{
-          images: [{ url: openGraphImageUrl }],
+          type: 'article',
+          article: {
+            publishedTime: createdAt,
+            authors: ['https://www.linkedin.com/in/malaikaanisar'],
+            tags: tags,
+          },
+          images: [
+            {
+              url: openGraphImageUrl,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ],
         }}
       />
       <ArticleJsonLd
@@ -40,10 +55,12 @@ export default function Note({
         images={[openGraphImageUrl]}
         title={title}
         datePublished={createdAt}
-        authorName="Bartosz Jarocki"
+        authorName="Malaika Nisar"
+        publisherName="Malaika Nisar"
+        publisherLogo={`${SITE_URL}/favicon/apple-touch-icon.png`}
         description={description}
       />
-      <NoteLayout
+      <BlogLayout
         meta={{ title, description, date: createdAt }}
         previousPathname={previousPathname}
       >
@@ -64,7 +81,7 @@ export default function Note({
             </h4>
           </a>
         </div>
-      </NoteLayout>
+      </BlogLayout>
     </>
   );
 }

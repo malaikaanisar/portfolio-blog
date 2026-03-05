@@ -1,11 +1,13 @@
 {
-  "name": "Bartosz Jarocki personal website",
-  "short_name": "Bartosz Jarocki",
+  "name": "Malaika Nisar — Digital Marketer",
+  "short_name": "Malaika Nisar",
   "icons": [
     { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
   ],
   "theme_color": "#18181b",
   "background_color": "#18181b",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
 }

@@ -3,37 +3,42 @@ import { NextSeo } from 'next-seo';
 import React from 'react';
 
 import { PageLayout } from '../../components/PageLayout';
-import { NotePreview } from '../../components/notes/NotePreview';
-import { Note, notesApi } from '../../lib/notesApi';
+import { BlogPreview } from '../../components/blogs/BlogPreview';
+import { BlogPost, notesApi } from '../../lib/notesApi';
 
-const seoTitle = 'Tags';
-const seoDescription = 'All of my blog posts tagged with ';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
 
 interface Props {
   tag: string;
-  relatedNotes: Note[];
+  relatedNotes: BlogPost[];
 }
 
 export default function Tag({ tag, relatedNotes }: Props) {
+  const seoTitle = `#${tag} — Blog Posts by Malaika Nisar`;
+  const seoDescription = `Browse all blog posts tagged with #${tag} — insights on digital marketing, social media, and more by Malaika Nisar.`;
+
   return (
     <>
       <NextSeo
         title={seoTitle}
-        description={`${seoDescription}#${tag}}`}
-        canonical={`${process.env.NEXT_PUBLIC_URL}/tags/${tag}`}
+        description={seoDescription}
+        canonical={`${SITE_URL}/tags/${tag}`}
         openGraph={{
           images: [
             {
-              url: `${process.env.NEXT_PUBLIC_URL}/api/og?title=${seoTitle}&description=${seoDescription}`,
+              url: `${SITE_URL}/api/og?title=${encodeURIComponent(seoTitle)}&description=${encodeURIComponent(seoDescription)}`,
+              width: 1200,
+              height: 630,
+              alt: seoTitle,
             },
           ],
         }}
       />
-      <PageLayout title="Tags" intro={`All the articles from #${tag}`}>
+      <PageLayout title={`#${tag}`} intro={`All blog posts tagged with #${tag}`}>
         <div className="mt-24 md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
           <div className="flex max-w-3xl flex-col space-y-16">
-            {relatedNotes.map((note) => (
-              <NotePreview key={note.slug} note={note} />
+            {relatedNotes.map((post) => (
+              <BlogPreview key={post.slug} post={post} />
             ))}
           </div>
         </div>

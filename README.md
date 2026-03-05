@@ -1,413 +1,164 @@
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1em;">
-  <h1 style="margin: 0;">Bartosz Jarocki - Personal Website</h1>
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FBartoszJarocki%2Fweb-jarocki-me">
-    <img src="https://vercel.com/button" alt="Deploy with Vercel">
-  </a>
-</div>
+# Malaika Nisar — Personal Portfolio & Blog
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Next.js](https://img.shields.io/badge/Next.js-14.0-black.svg)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue.svg)](https://typescriptlang.org/)
 
-> A modern, performant personal website built with Next.js and Notion as a headless CMS
+> A modern, SEO-optimized personal website and blog built with Next.js and Notion as a headless CMS.
 
-[**🌐 Live Demo**](https://jarocki.me) | [**📚 Documentation**](#documentation)
-
-![Screenshot](screenshots/screenshot.png)
-
----
-
-## Table of Contents
-
-- [Bartosz Jarocki - Personal Website ](#bartosz-jarocki---personal-website-)
-  - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Tech Stack](#tech-stack)
-  - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Quick Start](#quick-start)
-  - [Environment Setup](#environment-setup)
-    - [Getting Notion Credentials](#getting-notion-credentials)
-  - [Notion Database Configuration](#notion-database-configuration)
-    - [Database Template](#database-template)
-  - [Development](#development)
-    - [Available Scripts](#available-scripts)
-    - [Project Structure](#project-structure)
-  - [Deployment](#deployment)
-    - [Deploy to Vercel (Recommended)](#deploy-to-vercel-recommended)
-    - [Other Platforms](#other-platforms)
-  - [OG Image Generation](#og-image-generation)
-    - [Examples](#examples)
-    - [Customization](#customization)
-  - [Contributing](#contributing)
-    - [Ways to Contribute](#ways-to-contribute)
-    - [Development Workflow](#development-workflow)
-    - [Code Standards](#code-standards)
-  - [Troubleshooting](#troubleshooting)
-    - [Common Issues](#common-issues)
-    - [Performance Issues](#performance-issues)
-    - [Need More Help?](#need-more-help)
-  - [License](#license)
-    - [What This Means](#what-this-means)
+[**🌐 Live Site**](https://malaikaanisar.vercel.app)
 
 ---
 
 ## Features
 
-✨ **Core Features**
-
-- 🚀 **Blazing Fast** - Built with Next.js 14 and optimized for performance
-- 📝 **Notion CMS Integration** - Seamless content management through Notion
-- 🌙 **Dark/Light Mode** - Automatic theme switching with system preference detection
-- 📱 **Fully Responsive** - Mobile-first design that works on all devices
-- 🔍 **SEO Optimized** - Built-in SEO with NextSEO and automatic sitemap generation
-
-🎨 **Design & UX**
-
-- ⚡ **Lightning-fast Loading** - Static generation with Incremental Static Regeneration
-- 🖼️ **Dynamic OG Images** - Auto-generated Open Graph images for social sharing
-- 🏷️ **Smart Tagging System** - Organize and filter content with tags
-- 📊 **Analytics Ready** - Vercel Analytics integration
-- 🎯 **Accessibility First** - WCAG compliant design
-
-🛠️ **Developer Experience**
-
-- 🔧 **TypeScript** - Full type safety throughout the application
-- 🎨 **Tailwind CSS** - Utility-first styling with custom design system
-- 📦 **Modern Tooling** - ESLint, Prettier, and automated workflows
-- 🔄 **Hot Reload** - Instant feedback during development
-- 📈 **Performance Monitoring** - Built-in performance tracking
-
----
+- **Blog System** — Content managed via Notion, with tags, cover images, and automatic sitemap inclusion
+- **SEO Optimized** — Full meta tags, Open Graph, Twitter Cards, JSON-LD structured data, dynamic sitemap
+- **Dark Mode** — System-aware theme toggle with `next-themes`
+- **Static Generation** — SSG with ISR for fast page loads and fresh content
+- **OG Image Generation** — Dynamic Open Graph images generated at the edge via `@vercel/og`
+- **RSS Feed** — Auto-generated RSS feed at `/api/rss.xml`
+- **Analytics** — Vercel Analytics integration
+- **Responsive Design** — Mobile-first layout with Tailwind CSS
+- **Performance** — Image optimization with Plaiceholder and Next.js Image
 
 ## Tech Stack
 
-This project leverages modern web technologies for optimal performance and developer experience:
-
-| Technology | Purpose | Why This Choice |
-|------------|---------|----------------|
-| **[Next.js 14](https://nextjs.org/)** | React Framework | App Router, SSG/ISR, built-in optimizations |
-| **[TypeScript](https://typescriptlang.org/)** | Type Safety | Enhanced DX, fewer runtime errors |
-| **[Notion API](https://developers.notion.com/)** | Headless CMS | Non-technical content management |
-| **[Tailwind CSS](https://tailwindcss.com/)** | Styling | Rapid development, consistent design |
-| **[Next Themes](https://github.com/pacocoursey/next-themes)** | Theme Management | Seamless dark/light mode switching |
-| **[Vercel OG](https://vercel.com/docs/functions/edge-functions/og-image-generation)** | OG Images | Dynamic social media previews |
-| **[NextSEO](https://github.com/garmeeh/next-seo)** | SEO Optimization | Better search engine visibility |
-| **[Framer Motion](https://framer.com/motion/)** | Animations | Smooth, performant animations |
-
----
+- [Next.js 14](https://nextjs.org/) — React framework with SSG/ISR
+- [TypeScript](https://typescriptlang.org/) — Type safety
+- [Tailwind CSS](https://tailwindcss.com/) — Utility-first styling
+- [Notion API](https://developers.notion.com/) — Headless CMS
+- [next-seo](https://github.com/garmeeh/next-seo) — SEO meta management
+- [next-sitemap](https://github.com/iamvishnusankar/next-sitemap) — Sitemap generation
+- [Framer Motion](https://www.framer.com/motion/) — Animations
+- [Vercel](https://vercel.com/) — Hosting & deployment
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ and yarn
-- A Notion account and workspace
-- Git
+- Node.js 18+
+- Yarn package manager
+- A Notion account with an API integration
 
 ### Quick Start
 
-1. **Clone the repository**
+```bash
+# Clone the repository
+git clone https://github.com/your-username/portfolio-blog.git
+cd portfolio-blog
 
-   ```bash
-   git clone https://github.com/BartoszJarocki/web-jarocki-me.git
-   cd web-jarocki-me
-   ```
+# Install dependencies
+yarn install
 
-2. **Install dependencies**
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your credentials
 
-   ```bash
-   yarn install
-   ```
+# Start development server
+yarn dev
+```
 
-3. **Set up environment variables**
+## Environment Variables
 
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your values
-   ```
-
-4. **Configure your Notion database** (see [Notion setup](#notion-database-configuration))
-
-5. **Start development server**
-
-   ```bash
-   yarn dev
-   ```
-
-6. **Open [http://localhost:3000](http://localhost:3000)** in your browser
-
----
-
-## Environment Setup
-
-Create a `.env.local` file in the root directory with the following variables:
+Create a `.env.local` file with:
 
 ```env
-# Required: Base URL for canonical links and OG images
-NEXT_PUBLIC_URL=https://yourdomain.com
-
-# Required: Notion API integration token
-NOTION_TOKEN=your_notion_integration_token
-
-# Required: Your Notion database ID
-NOTION_DATABASE_ID=your_database_id
+NOTION_TOKEN=your_notion_api_token
+NOTION_DATABASE_ID=your_notion_database_id
+NEXT_PUBLIC_URL=http://localhost:3000
+SITE_URL=https://malaikaanisar.vercel.app
 ```
+
+For production (Vercel), set `NEXT_PUBLIC_URL=https://malaikaanisar.vercel.app`.
 
 ### Getting Notion Credentials
 
-1. **Create a Notion Integration**
-   - Go to [Notion Developers](https://developers.notion.com/)
-   - Create a new integration and copy the token
+1. Go to [Notion Integrations](https://www.notion.so/my-integrations) and create a new integration
+2. Copy the **Internal Integration Token** → `NOTION_TOKEN`
+3. Share your Notion database with the integration
+4. Copy the **Database ID** from the database URL → `NOTION_DATABASE_ID`
 
-2. **Get Database ID**
-   - Open your Notion database
-   - Copy the ID from the URL: `notion.so/username/DATABASE_ID?v=...`
+## Notion Database Schema
 
-3. **Connect Integration to Database**
-   - In your Notion database, click "..." → "Connections" → Add your integration
+Your Notion database should have these properties:
 
----
+| Property | Type | Description |
+|----------|------|-------------|
+| `title` | Title | Blog post title |
+| `slug` | Rich Text | URL slug for the post |
+| `description` | Rich Text | SEO meta description |
+| `published` | Checkbox | Whether to show on the site |
+| `publishedAt` | Date | Publication date |
+| `hashtags` | Multi-select | Tags/categories |
+| `cover` | Files | Cover image |
 
-## Notion Database Configuration
+## Available Scripts
 
-Your Notion database must include these properties for the application to work correctly:
+| Command | Description |
+|---------|-------------|
+| `yarn dev` | Start development server |
+| `yarn build` | Build for production |
+| `yarn start` | Start production server |
+| `yarn lint` | Run ESLint |
+| `yarn format` | Format code with Prettier |
+| `yarn typecheck` | TypeScript type checking |
+| `yarn postbuild` | Generate sitemap (auto after build) |
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `title` | Title | ✅ | Post title (primary property) |
-| `slug` | Rich Text | ✅ | URL slug (e.g., "hello-world") |
-| `description` | Rich Text | ✅ | Post excerpt/description |
-| `published` | Checkbox | ✅ | Whether post is published |
-| `publishedAt` | Date | ✅ | Publication date |
-| `hashtags` | Multi-select | ✅ | Post tags/categories |
-| `inProgress` | Checkbox | ❌ | Shows "Work in Progress" badge |
-| `cover` | Files & Media | ❌ | Post cover image |
-
-### Database Template
-
-Here's how your Notion database should look:
-
-![Notion Database Setup](screenshots/notion.png)
-
-**Need help?** Check out our [detailed Notion setup guide](docs/notion-setup.md).
-
----
-
-## Development
-
-### Available Scripts
-
-```bash
-# Development
-yarn dev          # Start development server
-yarn build        # Build for production
-yarn start        # Start production server
-
-# Code Quality
-yarn lint         # Run ESLint
-yarn typecheck    # Run TypeScript checks
-yarn format       # Format code with Prettier
-
-# Utilities
-yarn postbuild    # Generate sitemap (runs after build)
-```
-
-### Project Structure
+## Project Structure
 
 ```
 src/
-├── components/          # Reusable React components
-│   ├── icons/          # SVG icon components
-│   ├── notes/          # Blog/notes specific components
-│   └── notion/         # Notion integration components
-├── data/               # Static data and content
-├── images/             # Static images (logos, travel photos)
-├── lib/                # Utility functions and API clients
-├── pages/              # Next.js pages (file-based routing)
-│   ├── api/           # API routes (OG images, RSS)
-│   ├── notes/         # Blog post pages
-│   └── tags/          # Tag filtering pages
-└── styles/             # Global styles and Prism themes
+├── components/       # Reusable React components
+│   ├── blogs/        # Blog-specific components
+│   ├── icons/        # SVG icon components
+│   ├── notion/       # Notion block renderer
+│   └── tools/        # Tools page components
+├── data/
+│   └── lifeApi.tsx   # Personal data, projects, social links
+├── lib/
+│   ├── notesApi.ts   # Notion API client
+│   ├── date.ts       # Date utilities
+│   └── animation.ts  # Animation configs
+├── pages/
+│   ├── blogs/        # Blog listing & individual posts
+│   ├── tags/         # Tag-filtered blog views
+│   ├── api/          # OG image & RSS endpoints
+│   ├── about.tsx     # About page
+│   ├── work.tsx      # Work/projects page
+│   └── tools.tsx     # Marketing tools page
+└── styles/           # Global CSS & Prism themes
 ```
 
----
+## SEO Features
+
+- **DefaultSeo** in `_app.tsx` — Site-wide meta defaults, OG tags, Twitter cards
+- **Per-page SEO** — Custom title, description, canonical URL on every page
+- **JSON-LD Structured Data** — `WebSite`, `Person`, `ProfilePage`, `ArticleJsonLd` schemas
+- **Dynamic Sitemap** — Auto-includes all blog posts with proper priorities via `next-sitemap`
+- **Robots.txt** — Auto-generated with sitemap reference
+- **OG Image API** — Dynamic images at `/api/og` for social sharing
+- **RSS Feed** — Available at `/api/rss.xml`
+- **Security Headers** — `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`
+- **301 Redirects** — Old URLs redirect to new paths
 
 ## Deployment
 
 ### Deploy to Vercel (Recommended)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FBartoszJarocki%2Fweb-jarocki-me)
+1. Push to GitHub
+2. Import project on [Vercel](https://vercel.com/)
+3. Set environment variables in Vercel dashboard
+4. Deploy
 
-1. Click the deploy button above
-2. Configure environment variables in Vercel dashboard
-3. Your site will be automatically deployed on every push to main
+### Environment Variables for Production
 
-### Other Platforms
-
-This is a standard Next.js application and can be deployed to:
-
-- **Netlify** - Add build command: `yarn build && yarn export`
-- **Railway** - Auto-deploys from Git with zero config
-- **DigitalOcean App Platform** - Full-stack hosting
-- **AWS Amplify** - Serverless hosting with CI/CD
-
----
-
-## OG Image Generation
-
-The application automatically generates Open Graph images for social media sharing using Vercel's Edge Functions.
-
-### Examples
-
-**Homepage**
-![Homepage OG](https://jarocki.me/api/og?title=Bartosz%20Jarocki&description=A%20passionate%20software%20engineer%20with%20an%20eye%20for%20details%20based%20in%20Wroc%C5%82aw,%20Poland.)
-
-**Blog Post**
-![Blog Post OG](https://jarocki.me/api/og?title=Monito,%20two%20weeks%20after%20launch&description=No%20audience,%20just%20Product%20Hunt%20and%20Hacker%20News%20launch.%20How%20did%20it%20go?)
-
-### Customization
-
-Edit `src/pages/api/og.tsx` to customize:
-
-- Font styles and sizes
-- Color schemes
-- Layout and positioning
-- Dynamic elements
-
----
-
-## Contributing
-
-We welcome contributions! Here's how you can help:
-
-### Ways to Contribute
-
-- 🐛 **Bug Reports** - Found an issue? [Open a bug report](https://github.com/BartoszJarocki/web-jarocki-me/issues)
-- 💡 **Feature Requests** - Have an idea? [Suggest a feature](https://github.com/BartoszJarocki/web-jarocki-me/issues)
-- 🔧 **Code Contributions** - Submit a pull request
-- 📖 **Documentation** - Improve docs and guides
-- 🎨 **Design** - UI/UX improvements
-
-### Development Workflow
-
-1. **Fork the repository**
-2. **Create a feature branch**
-
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-
-3. **Make your changes**
-
-   ```bash
-   # Make sure tests pass and code is formatted
-   yarn lint
-   yarn typecheck
-   yarn format
-   ```
-
-4. **Commit your changes**
-
-   ```bash
-   git commit -m 'Add amazing feature'
-   ```
-
-5. **Push to your fork**
-
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-
-6. **Create a Pull Request**
-
-### Code Standards
-
-- **TypeScript** - All new code should be typed
-- **ESLint/Prettier** - Code must pass linting and formatting
-- **Components** - Follow existing patterns and naming conventions
-- **Commits** - Use conventional commit messages
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-**Build Errors**
-
-```bash
-# Clear Next.js cache
-rm -rf .next
-yarn build
-
-# Clear all caches
-rm -rf .next node_modules yarn.lock
-yarn install
-```
-
-**Notion API Issues**
-
-- Verify your `NOTION_TOKEN` is correct
-- Ensure the integration has access to your database
-- Check that all required database properties exist
-
-**Environment Variables**
-
-- Ensure `.env.local` exists and contains all required variables
-- Restart your development server after changing env vars
-- Check that `NEXT_PUBLIC_URL` matches your deployment URL
-
-**TypeScript Errors**
-
-```bash
-# Check for type errors
-yarn typecheck
-
-# Regenerate TypeScript cache
-rm -rf .next/types
-yarn dev
-```
-
-### Performance Issues
-
-- **Slow builds?** Check if you have too many images in `/public`
-- **Slow loading?** Verify your Notion database isn't too large
-- **Memory issues?** Increase Node.js memory: `NODE_OPTIONS="--max-old-space-size=4096" yarn build`
-
-### Need More Help?
-
-- 📖 [Next.js Documentation](https://nextjs.org/docs)
-- 🔗 [Notion API Docs](https://developers.notion.com/)
-- 💬 [Open an Issue](https://github.com/BartoszJarocki/web-jarocki-me/issues)
-
----
+Set these in your Vercel project settings:
+- `NOTION_TOKEN`
+- `NOTION_DATABASE_ID`
+- `NEXT_PUBLIC_URL` = `https://malaikaanisar.vercel.app`
+- `SITE_URL` = `https://malaikaanisar.vercel.app`
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-### What This Means
-
-✅ **You can:**
-
-- Use this code for personal or commercial projects
-- Modify and distribute the code
-- Create derivative works
-
-❌ **You cannot:**
-
-- Remove copyright notices
-- Use our trademarks or branding
-
-**Attribution appreciated but not required!**
-
----
-
-<div align="center">
-
-**[⬆ Back to Top](#bartosz-jarocki---personal-website)**
-
-Made with ❤️ by [Bartosz Jarocki](https://jarocki.me)
-
-</div>
+[MIT](LICENSE) © 2025 Malaika Nisar

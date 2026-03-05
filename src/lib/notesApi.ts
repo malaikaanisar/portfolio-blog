@@ -8,7 +8,7 @@ const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 
-export type Note = {
+export type BlogPost = {
   id: string;
   createdAt: string;
   lastEditedAt: string;
@@ -19,8 +19,10 @@ export type Note = {
   slug: string;
   isPublished: boolean;
   publishedAt: string;
-  inProgress: boolean;
 };
+
+/** @deprecated Use BlogPost instead */
+export type Note = BlogPost;
 
 const noop = async (block: BlockObjectResponse) => block;
 
@@ -124,7 +126,7 @@ class NotesApi {
     return Array.from(new Set(posts.map((note) => note.tags).flat()));
   }
 
-  private getDatabaseContent = async (databaseId: string): Promise<Note[]> => {
+  private getDatabaseContent = async (databaseId: string): Promise<BlogPost[]> => {
     const db = await this.notion.databases.query({ database_id: databaseId });
 
     while (db.has_more && db.next_cursor) {
@@ -163,8 +165,6 @@ class NotesApi {
             'checkbox' in page.properties.published ? page.properties.published.checkbox : false,
           publishedAt:
             'date' in page.properties.publishedAt ? page.properties.publishedAt.date!.start : '',
-          inProgress:
-            'checkbox' in page.properties.inProgress ? page.properties.inProgress.checkbox : false,
         };
       })
       .filter((post) => post.isPublished);

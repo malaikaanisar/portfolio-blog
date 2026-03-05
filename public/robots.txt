@@ -1,9 +1,10 @@
-# *
+# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+Disallow: /api/
 
 # Host
-Host: https://jarocki.me
+Host: https://malaikaanisar.vercel.app
 
 # Sitemaps
-Sitemap: https://jarocki.me/sitemap.xml
+Sitemap: https://malaikaanisar.vercel.app/sitemap.xml

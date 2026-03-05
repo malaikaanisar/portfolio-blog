@@ -14,23 +14,23 @@ export const NavigationItems = [
     type: 'internal',
   },
   {
-    name: 'Notes',
-    href: '/notes',
+    name: 'Blogs',
+    href: '/blogs',
     type: 'internal',
   },
   {
-    name: 'Creating',
-    href: '/creating',
+    name: 'Work',
+    href: '/work',
     type: 'internal',
   },
   {
-    name: 'Uses',
-    href: '/uses',
+    name: 'Tools',
+    href: '/tools',
     type: 'internal',
   },
   {
     name: 'Resume',
-    href: 'https://cv.jarocki.me',
+    href: 'https://www.linkedin.com/in/malaikaanisar',
     type: 'external',
   },
   {
