@@ -39,7 +39,7 @@ const CardTitle = ({
 };
 
 const CardDescription = ({ children }: React.PropsWithChildren) => {
-  return <p className="relative z-10 mt-2 text-sm">{children}</p>;
+  return <p className="relative z-10 mt-2 text-sm line-clamp-3">{children}</p>;
 };
 
 const CardCta = ({ children }: React.PropsWithChildren) => {

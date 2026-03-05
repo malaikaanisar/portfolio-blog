@@ -57,7 +57,6 @@ export default function Home({ latestBlogs }: Props) {
   return (
     <>
       <NextSeo
-        title={seoTitle}
         description={seoDescription}
         canonical={SITE_URL}
         openGraph={{
