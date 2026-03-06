@@ -37,6 +37,9 @@ module.exports = {
     } else if (path === '/resume') {
       priority = 0.8;
       changefreq = 'monthly';
+    } else if (path === '/contact') {
+      priority = 0.8;
+      changefreq = 'monthly';
     } else if (path.startsWith('/tags/')) {
       priority = 0.6;
       changefreq = 'weekly';

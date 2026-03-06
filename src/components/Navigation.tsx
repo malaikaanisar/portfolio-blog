@@ -34,6 +34,11 @@ export const NavigationItems = [
     type: 'internal',
   },
   {
+    name: 'Contact',
+    href: '/contact',
+    type: 'internal',
+  },
+  {
     name: 'About',
     href: '/about',
     type: 'internal',
