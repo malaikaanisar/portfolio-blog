@@ -20,6 +20,17 @@ export default function Document() {
         <link rel="preconnect" href="https://cdn.simpleicons.org" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="//vitals.vercel-insights.com" />
         <link rel="preconnect" href="https://vitals.vercel-insights.com" crossOrigin="anonymous" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "vrowt7b094");
+            `,
+          }}
+        />
       </Head>
       <body className="flex h-full flex-col bg-zinc-50 dark:bg-black text-zinc-700 dark:text-zinc-300">
         <Main />
