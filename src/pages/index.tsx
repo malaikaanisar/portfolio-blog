@@ -1,6 +1,6 @@
 import { compareDesc } from 'date-fns';
 import { GetStaticProps } from 'next';
-import { NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import Head from 'next/head';
 
 import { Container } from '../components/Container';
@@ -69,6 +69,11 @@ export default function Home({ latestBlogs }: Props) {
             },
           ],
         }}
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          { position: 1, name: 'Home', item: SITE_URL },
+        ]}
       />
       <Head>
         <script

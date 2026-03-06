@@ -1,0 +1,57 @@
+# Malaika Nisar — Digital Marketer Portfolio
+
+> Site: https://malaikaanisar.vercel.app
+> Author: Malaika Nisar
+> Purpose: Personal portfolio and blog website
+> Contact: malaikaanisar2521@gmail.com
+
+## About
+
+Malaika Nisar is a results-driven Digital Marketer based in Rahim Yar Khan, Pakistan. She specializes in social media marketing, content strategy, SEO, and data-driven campaigns. She currently manages the digital presence for leading toy brands including Bacha Toys, Junior Land, and Golu Baby.
+
+## Content
+
+This website contains the following sections:
+
+- **Home** (`/`): Introduction, latest blog posts, and resume summary
+- **Blogs** (`/blogs`): Articles on digital marketing, social media strategy, content creation, and SEO
+- **Work** (`/work`): Professional projects and work experience showcase
+- **Tools** (`/tools`): Marketing tools, platforms, and software recommendations
+- **Resume** (`/resume`): Professional resume with work experience, skills, and education
+- **About** (`/about`): Detailed biography, interests, books, podcasts, and more
+
+## Skills & Expertise
+
+- Social Media Marketing (Facebook, Instagram, TikTok)
+- Content Strategy & Creation
+- Search Engine Optimization (SEO)
+- Google Analytics & Search Console
+- Meta Business Suite & Ads Manager
+- E-commerce Management (Shopify)
+- Email Marketing (Mailchimp)
+- Brand Management & Growth
+- Paid Advertising Campaigns
+- Canva Design
+
+## Work Experience
+
+- Content Manager & Social Media Marketer at Bacha Toys, Junior Land, and Golu Baby
+- Social Media Marketer at G-Tech Solutions
+
+## Education
+
+- BS in Computer Science — The Islamia University of Bahawalpur
+
+## Technical Details
+
+- Built with Next.js and deployed on Vercel
+- Blog content managed via Notion CMS
+- Static site generation with incremental static regeneration
+- RSS feed available at `/api/rss.xml`
+- Sitemap at `/sitemap.xml`
+
+## Social Links
+
+- LinkedIn: https://www.linkedin.com/in/malaikaanisar
+- GitHub: https://github.com/malaikaanisar
+- Email: malaikaanisar2521@gmail.com

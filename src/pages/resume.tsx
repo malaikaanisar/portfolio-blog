@@ -1,5 +1,5 @@
 import { ArrowDownTrayIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
-import { NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import Head from 'next/head';
 import React, { useRef } from 'react';
 
@@ -41,6 +41,12 @@ export default function ResumePage() {
             },
           ],
         }}
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          { position: 1, name: 'Home', item: SITE_URL },
+          { position: 2, name: 'Resume', item: `${SITE_URL}/resume` },
+        ]}
       />
       <Head>
         <style>{`

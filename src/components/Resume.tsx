@@ -17,7 +17,7 @@ export const Resume = () => {
               {role.logo ? (
                 <Image
                   src={role.logo}
-                  alt="Logo"
+                  alt={`${role.company} logo`}
                   className="h-7 w-7 rounded-full object-cover"
                   unoptimized
                 />

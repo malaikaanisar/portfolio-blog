@@ -16,6 +16,10 @@ export default function Document() {
         <meta name="msapplication-TileColor" content="#18181b" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//cdn.simpleicons.org" />
+        <link rel="preconnect" href="https://cdn.simpleicons.org" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//vitals.vercel-insights.com" />
+        <link rel="preconnect" href="https://vitals.vercel-insights.com" crossOrigin="anonymous" />
       </Head>
       <body className="flex h-full flex-col bg-zinc-50 dark:bg-black text-zinc-700 dark:text-zinc-300">
         <Main />

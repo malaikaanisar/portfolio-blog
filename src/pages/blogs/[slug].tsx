@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { ArticleJsonLd, NextSeo } from 'next-seo';
+import { ArticleJsonLd, BreadcrumbJsonLd, NextSeo } from 'next-seo';
 import Prism from 'prismjs';
 import { useEffect } from 'react';
 
@@ -49,6 +49,13 @@ export default function Blog({
             },
           ],
         }}
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          { position: 1, name: 'Home', item: SITE_URL },
+          { position: 2, name: 'Blog', item: `${SITE_URL}/blogs` },
+          { position: 3, name: title, item: url },
+        ]}
       />
       <ArticleJsonLd
         url={url}

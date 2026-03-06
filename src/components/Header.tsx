@@ -117,6 +117,7 @@ export const Header = () => {
           height: 'var(--header-height)',
           marginBottom: 'var(--header-mb)',
         }}
+        role="banner"
       >
         {isHomePage && (
           <>

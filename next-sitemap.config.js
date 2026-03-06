@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: process.env.SITE_URL || 'https://malaikaanisar.vercel.app',
-  generateRobotsTxt: true,
+  generateRobotsTxt: false,
   autoLastmod: true,
   generateIndexSitemap: false,
   changefreq: 'weekly',
@@ -33,6 +33,9 @@ module.exports = {
       changefreq = 'weekly';
     } else if (path === '/work' || path === '/tools') {
       priority = 0.7;
+      changefreq = 'monthly';
+    } else if (path === '/resume') {
+      priority = 0.8;
       changefreq = 'monthly';
     } else if (path.startsWith('/tags/')) {
       priority = 0.6;

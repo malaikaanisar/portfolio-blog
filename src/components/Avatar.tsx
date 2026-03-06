@@ -14,7 +14,7 @@ export const Avatar = ({ large = false, className, ...props }: Props) => {
     <Link href="/" aria-label="Home" className={clsx(className, 'pointer-events-auto')} {...props}>
       <Image
         src={AvatarImage}
-        alt=""
+        alt="Malaika Nisar"
         sizes={large ? '4rem' : '2.25rem'}
         className={clsx(
           'rounded-full bg-zinc-100 object-cover dark:bg-zinc-800',

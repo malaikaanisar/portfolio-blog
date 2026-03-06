@@ -1,5 +1,5 @@
 import { EnvelopeIcon } from '@heroicons/react/24/outline';
-import { NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, FAQPageJsonLd, NextSeo } from 'next-seo';
 import Head from 'next/head';
 import Image from 'next/image';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -76,6 +76,31 @@ export default function AboutMe() {
             },
           ],
         }}
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          { position: 1, name: 'Home', item: SITE_URL },
+          { position: 2, name: 'About', item: `${SITE_URL}/about` },
+        ]}
+      />
+      <FAQPageJsonLd
+        mainEntity={[
+          {
+            questionName: 'Who is Malaika Nisar?',
+            acceptedAnswerText:
+              'Malaika Nisar is a results-driven Digital Marketer based in Rahim Yar Khan, Pakistan, specializing in social media marketing, content strategy, SEO, and data-driven campaigns.',
+          },
+          {
+            questionName: 'What services does Malaika Nisar offer?',
+            acceptedAnswerText:
+              'Malaika offers social media marketing, content strategy, SEO optimization, brand management, e-commerce management, email marketing, and paid advertising campaigns.',
+          },
+          {
+            questionName: 'Where does Malaika Nisar currently work?',
+            acceptedAnswerText:
+              'Malaika currently works as a Content Manager & Social Media Marketer for Bacha Toys, Junior Land, and Golu Baby — leading toy brands in Pakistan.',
+          },
+        ]}
       />
       <Head>
         <script

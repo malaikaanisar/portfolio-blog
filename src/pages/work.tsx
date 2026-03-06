@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 
 import { PageLayout } from '../components/PageLayout';
 import { ProjectCard } from '../components/ProjectCard';
@@ -28,6 +28,12 @@ export default function Work() {
             },
           ],
         }}
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          { position: 1, name: 'Home', item: SITE_URL },
+          { position: 2, name: 'Work', item: `${SITE_URL}/work` },
+        ]}
       />
       <PageLayout
         title="My work experience and projects in digital marketing."

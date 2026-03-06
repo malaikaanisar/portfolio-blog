@@ -1,4 +1,4 @@
-import { NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 
 import { PageLayout } from '../components/PageLayout';
 import { Tool } from '../components/tools/Tool';
@@ -27,6 +27,12 @@ export default function ToolsPage() {
             },
           ],
         }}
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          { position: 1, name: 'Home', item: SITE_URL },
+          { position: 2, name: 'Tools', item: `${SITE_URL}/tools` },
+        ]}
       />
       <PageLayout
         title="Tools I use, platforms I love, and other things I recommend."

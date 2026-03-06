@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import { NextSeo } from 'next-seo';
+import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
 
 import { Badge } from '../../components/Badge';
 import { PageLayout } from '../../components/PageLayout';
@@ -35,6 +35,12 @@ export default function Blogs({ notes, tags }: Props) {
             },
           ],
         }}
+      />
+      <BreadcrumbJsonLd
+        itemListElements={[
+          { position: 1, name: 'Home', item: SITE_URL },
+          { position: 2, name: 'Blog', item: `${SITE_URL}/blogs` },
+        ]}
       />
       <PageLayout
         title="Blog posts on digital marketing, social media, and more."
