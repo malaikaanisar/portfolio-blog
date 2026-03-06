@@ -36,7 +36,7 @@ export default function ToolsPage() {
           {Object.entries(Tools).map(([title, tools]) => (
             <ToolsSection key={title} title={title}>
               {tools.map((tool) => (
-                <Tool key={tool.title} title={tool.title} href={tool.href}>
+                <Tool key={tool.title} title={tool.title} href={tool.href} logo={tool.logo} logoBg={tool.logoBg}>
                   {tool.description}
                 </Tool>
               ))}

@@ -113,7 +113,7 @@ export const CompaniesLinks = [
   },
   {
     name: 'G-Tech Solutions',
-    link: '#',
+    link: 'https://www.facebook.com/gtechacademyryk/',
   },
 ] as const;
 
@@ -260,24 +260,32 @@ export const Tools = {
       description:
         'Essential for managing Facebook and Instagram business pages, scheduling posts, running ads, and analyzing audience insights all in one place.',
       href: 'https://business.facebook.com/',
+      logo: 'https://cdn.simpleicons.org/meta/white',
+      logoBg: '#1877F2',
     },
     {
       title: 'Google Analytics',
       description:
         'The go-to tool for tracking website traffic, user behavior, and conversion metrics to make data-driven marketing decisions.',
       href: 'https://analytics.google.com/',
+      logo: 'https://cdn.simpleicons.org/googleanalytics/white',
+      logoBg: '#E37400',
     },
     {
       title: 'Canva',
       description:
         'My favorite design tool for creating social media graphics, stories, presentations, and marketing materials quickly and beautifully.',
       href: 'https://www.canva.com/',
+      logo: 'https://www.google.com/s2/favicons?domain=canva.com&sz=128',
+      logoBg: '#00C4CC',
     },
     {
       title: 'Hootsuite',
       description:
         'Helps me schedule and manage social media posts across multiple platforms, monitor engagement, and track performance.',
       href: 'https://www.hootsuite.com/',
+      logo: 'https://cdn.simpleicons.org/hootsuite/white',
+      logoBg: '#143059',
     },
   ],
   'Content & SEO': [
@@ -286,24 +294,32 @@ export const Tools = {
       description:
         'Crucial for monitoring website search performance, indexing status, and optimizing content for organic search visibility.',
       href: 'https://search.google.com/search-console',
+      logo: 'https://cdn.simpleicons.org/googlesearchconsole/white',
+      logoBg: '#458CF5',
     },
     {
       title: 'ChatGPT',
       description:
         'I use AI to brainstorm content ideas, draft copy, and speed up content creation workflows.',
       href: 'https://chat.openai.com/',
+      logo: 'https://www.google.com/s2/favicons?domain=chat.openai.com&sz=128',
+      logoBg: '#10A37F',
     },
     {
       title: 'Mailchimp',
       description:
         'Great for email marketing campaigns, audience segmentation, and automated email workflows to nurture leads.',
       href: 'https://mailchimp.com/',
+      logo: 'https://cdn.simpleicons.org/mailchimp/white',
+      logoBg: '#241C15',
     },
     {
       title: 'Notion',
       description:
         'I use it to plan content calendars, organize campaign briefs, and keep track of all my marketing projects.',
       href: 'https://www.notion.so/',
+      logo: 'https://cdn.simpleicons.org/notion/white',
+      logoBg: '#000000',
     },
   ],
 } as const;
