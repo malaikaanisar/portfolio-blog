@@ -113,17 +113,21 @@ export default function AboutMe() {
             <Section>
               <Section.Title as="h2">Work</Section.Title>
               <Section.Content>
-                I&apos;m a Social Media Marketing Specialist with experience in developing and
-                executing data-driven digital strategies. At{' '}
+                I currently work as a Content Manager &amp; Social Media Marketer for
+                Pakistan&apos;s #1 toy stores —{' '}
+                <ExternalLink href="https://bachatoys.com">Bacha Toys</ExternalLink>,{' '}
+                <ExternalLink href="https://juniorland.store">Junior Land</ExternalLink>, and{' '}
+                <ExternalLink href="https://golubaby.com">Golu Baby</ExternalLink>. I manage
+                their social media presence, run advertising campaigns, and handle their Shopify
+                e-commerce websites to drive sales and brand growth.
+                <br />
+                <br />
+                Previously, at{' '}
                 <ExternalLink href={'#'}>G-Tech Solutions</ExternalLink>, I was responsible for
                 planning, executing, and optimizing social media marketing strategies to enhance
-                brand visibility and engagement.
-                <br />
-                <br />I managed content creation and scheduling across multiple platforms, developed
-                and monitored paid advertising campaigns to generate leads and conversions, and
-                analyzed performance metrics to improve overall campaign effectiveness and ROI. I
-                collaborated closely with the team to strengthen the company&apos;s digital
-                presence and ensure consistent brand messaging across all channels.
+                brand visibility and engagement. I managed content creation and scheduling across
+                multiple platforms, developed and monitored paid advertising campaigns, and
+                analyzed performance metrics to maximize ROI.
                 <br />
                 <br />
                 If you&apos;d like to work with me, just{' '}

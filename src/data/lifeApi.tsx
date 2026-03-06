@@ -1,5 +1,8 @@
 import { ExternalLink } from '../components/ExternalLink';
 import { LinkedInIcon } from '../components/icons/LinkedInIcon';
+import goluBaby from '../images/logos/goluBaby.png'
+import bachaToys from '../images/logos/bachaToys.png'
+import juniorLand from '../images/logos/juniorLand.png'
 
 export const Name = 'Malaika Nisar';
 
@@ -22,7 +25,41 @@ export type Project = {
   };
 };
 
-export const MyCurrentProjects: Project[] = [];
+export const MyCurrentProjects: Project[] = [
+  {
+    title: 'Bacha Toys',
+    techStack: ['Social Media', 'Content Management', 'Shopify', 'Ad Campaigns'],
+    description:
+      "Pakistan's #1 toy store. I manage social media, run ad campaigns, and handle the Shopify website to drive sales and brand growth.",
+    logo: bachaToys,
+    link: {
+      label: 'bachatoys.com',
+      href: 'https://bachatoys.com',
+    },
+  },
+  {
+    title: 'Junior Land',
+    techStack: ['Social Media', 'Content Management', 'Shopify', 'Ad Campaigns'],
+    description:
+      "A leading toy store in Pakistan. I manage social media presence, run marketing campaigns, and maintain the Shopify e-commerce store.",
+    logo: juniorLand,
+    link: {
+      label: 'juniorland.store',
+      href: 'https://juniorland.store',
+    },
+  },
+  {
+    title: 'Golu Baby',
+    techStack: ['Social Media', 'Content Management', 'Shopify', 'Ad Campaigns'],
+    description:
+      "A top toy brand in Pakistan. I handle content creation, social media marketing, campaign management, and Shopify store operations.",
+    logo: goluBaby,
+    link: {
+      label: 'golubaby.com',
+      href: 'https://golubaby.com',
+    },
+  },
+];
 
 export const MyPastProjects: Project[] = [];
 
@@ -31,6 +68,27 @@ export const SocialMedia = [
 ] as const;
 
 export const Work = [
+  {
+    company: 'Bacha Toys',
+    title: 'Content Manager & Social Media Marketer',
+    logo: undefined,
+    start: 'Sep 2024',
+    end: 'Present',
+  },
+  {
+    company: 'Junior Land',
+    title: 'Content Manager & Social Media Marketer',
+    logo: undefined,
+    start: 'Sep 2024',
+    end: 'Present',
+  },
+  {
+    company: 'Golu Baby',
+    title: 'Content Manager & Social Media Marketer',
+    logo: undefined,
+    start: 'Sep 2024',
+    end: 'Present',
+  },
   {
     company: 'G-Tech Solutions',
     title: 'Social Media Marketing Specialist',
@@ -41,6 +99,18 @@ export const Work = [
 ] as const;
 
 export const CompaniesLinks = [
+  {
+    name: 'Bacha Toys',
+    link: 'https://bachatoys.com',
+  },
+  {
+    name: 'Junior Land',
+    link: 'https://juniorland.store',
+  },
+  {
+    name: 'Golu Baby',
+    link: 'https://golubaby.com',
+  },
   {
     name: 'G-Tech Solutions',
     link: '#',

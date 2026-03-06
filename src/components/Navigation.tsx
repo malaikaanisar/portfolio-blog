@@ -30,8 +30,8 @@ export const NavigationItems = [
   },
   {
     name: 'Resume',
-    href: 'https://www.linkedin.com/in/malaikaanisar',
-    type: 'external',
+    href: '/resume',
+    type: 'internal',
   },
   {
     name: 'About',
