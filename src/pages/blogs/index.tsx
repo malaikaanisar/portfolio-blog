@@ -5,6 +5,7 @@ import { Badge } from '../../components/Badge';
 import { PageLayout } from '../../components/PageLayout';
 import { BlogPreview } from '../../components/blogs/BlogPreview';
 import { BlogPost, notesApi } from '../../lib/notesApi';
+import { slugifyTag } from '../../lib/slugify';
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
 
@@ -42,7 +43,7 @@ export default function Blogs({ notes, tags }: Props) {
         <h3 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">Tags</h3>
         <div className="mt-4 flex max-w-xl flex-wrap gap-1 font-mono">
           {tags.map((tag) => (
-            <Badge key={tag} href={`/tags/${tag}`}>
+            <Badge key={tag} href={`/tags/${slugifyTag(tag)}`}>
               #{tag}
             </Badge>
           ))}

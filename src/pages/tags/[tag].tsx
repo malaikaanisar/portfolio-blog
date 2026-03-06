@@ -5,17 +5,19 @@ import React from 'react';
 import { PageLayout } from '../../components/PageLayout';
 import { BlogPreview } from '../../components/blogs/BlogPreview';
 import { BlogPost, notesApi } from '../../lib/notesApi';
+import { slugifyTag } from '../../lib/slugify';
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
 
 interface Props {
   tag: string;
+  displayTag: string;
   relatedNotes: BlogPost[];
 }
 
-export default function Tag({ tag, relatedNotes }: Props) {
-  const seoTitle = `#${tag} — Blog Posts by Malaika Nisar`;
-  const seoDescription = `Browse all blog posts tagged with #${tag} — insights on digital marketing, social media, and more by Malaika Nisar.`;
+export default function Tag({ tag, displayTag, relatedNotes }: Props) {
+  const seoTitle = `#${displayTag} — Blog Posts by Malaika Nisar`;
+  const seoDescription = `Browse all blog posts tagged with #${displayTag} — insights on digital marketing, social media, and more by Malaika Nisar.`;
 
   return (
     <>
@@ -34,7 +36,7 @@ export default function Tag({ tag, relatedNotes }: Props) {
           ],
         }}
       />
-      <PageLayout title={`#${tag}`} intro={`All blog posts tagged with #${tag}`}>
+      <PageLayout title={`#${displayTag}`} intro={`All blog posts tagged with #${displayTag}`}>
         <div className="mt-24 md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
           <div className="flex max-w-3xl flex-col space-y-16">
             {relatedNotes.map((post) => (
@@ -55,12 +57,15 @@ export const getStaticProps: GetStaticProps<Props, { tag: string }> = async (con
     };
   }
 
-  const relatedNotes = await notesApi.getNotesByTag(tag);
+  const allTags = await notesApi.getAllTags();
+  const displayTag = allTags.find((t) => slugifyTag(t) === tag) || tag;
+  const relatedNotes = await notesApi.getNotesByTag(displayTag);
 
   return {
     props: {
       relatedNotes,
       tag,
+      displayTag,
     },
     revalidate: 10,
   };
@@ -71,7 +76,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: tags.map((tag) => ({
-      params: { tag },
+      params: { tag: slugifyTag(tag) },
     })),
     fallback: 'blocking',
   };
