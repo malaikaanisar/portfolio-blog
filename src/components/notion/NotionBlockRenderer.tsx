@@ -108,11 +108,16 @@ export const NotionBlockRenderer = ({ block }: Props) => {
     case 'divider':
       return <hr key={id} />;
     case 'quote':
-      return <Quote key={id} quote={value.rich_text[0].plain_text} />;
+      return (
+        <Quote
+          key={id}
+          quote={value.rich_text?.[0]?.plain_text ?? ''}
+        />
+      );
     case 'code':
       return (
         <pre className={`language-${value.language}`}>
-          <code key={id}>{value.rich_text[0].plain_text}</code>
+          <code key={id}>{value.rich_text?.[0]?.plain_text ?? ''}</code>
         </pre>
       );
     case 'file':
