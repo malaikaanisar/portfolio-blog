@@ -5,7 +5,7 @@ import Head from 'next/head';
 
 import { Container } from '../components/Container';
 import { PageTitle } from '../components/PageTitle';
-import { Photos } from '../components/Photos';
+import { ScrollingMarquee } from '../components/ScrollingMarquee';
 import { Resume } from '../components/Resume';
 import { SocialLink } from '../components/SocialLink';
 import { BlogPreview } from '../components/blogs/BlogPreview';
@@ -101,7 +101,7 @@ export default function Home({ latestBlogs }: Props) {
           </div>
         </div>
       </Container>
-      <Photos />
+      <ScrollingMarquee />
       <Container className="mt-12">
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">

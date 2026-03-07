@@ -15,3 +15,31 @@
 .text-balance {
   text-wrap: balance;
 }
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee-left {
+  display: inline-flex;
+  animation: marquee-left 120s linear infinite;
+}
+
+.animate-marquee-right {
+  display: inline-flex;
+  animation: marquee-right 120s linear infinite;
+}
