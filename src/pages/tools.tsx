@@ -5,7 +5,7 @@ import { Tool } from '../components/tools/Tool';
 import { ToolsSection } from '../components/tools/ToolsSection';
 import { Tools } from '../data/lifeApi';
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
 const seoTitle = 'Tools — Malaika Nisar';
 const seoDescription = 'Marketing tools, platforms, and software recommended by Malaika Nisar for digital marketing success.';

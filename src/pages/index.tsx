@@ -16,7 +16,7 @@ const seoTitle = 'Malaika Nisar';
 const seoDescription =
   'Digital Marketer specializing in social media marketing, content strategy, and data-driven campaigns. Based in Rahim Yar Khan, Pakistan.';
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
 type Props = {
   latestBlogs: BlogPost[];

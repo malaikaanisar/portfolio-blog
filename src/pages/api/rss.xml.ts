@@ -6,15 +6,15 @@ import { notesApi } from '../../lib/notesApi';
 const rss: NextApiHandler = async (req, res) => {
   const feed = new RSS({
     title: 'Malaika Nisar',
-    site_url: process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app',
-    feed_url: `${process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app'}/rss.xml`,
+    site_url: process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space',
+    feed_url: `${process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space'}/rss.xml`,
   });
 
   const allPosts = await notesApi.getNotes();
   allPosts.map((post) => {
     feed.item({
       title: post.title,
-      url: `${process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app'}/blogs/${post.slug}`,
+      url: `${process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space'}/blogs/${post.slug}`,
       date: post.publishedAt,
       description: post.description,
     });

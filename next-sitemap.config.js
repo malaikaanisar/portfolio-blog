@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://malaikaanisar.vercel.app',
+  siteUrl: process.env.SITE_URL || 'https://malaikaa.space',
   generateRobotsTxt: false,
   autoLastmod: true,
   generateIndexSitemap: false,

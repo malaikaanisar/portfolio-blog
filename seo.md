@@ -89,7 +89,7 @@ Example:
  "@type": "Person",
  "name": "Malaika Anisar",
  "jobTitle": "Full Stack Developer",
- "url": "https://malaikaanisar.vercel.app"
+ "url": "https://malaikaa.space"
 }
 ```
 
@@ -212,7 +212,7 @@ Example:
 ```
 
 ```
-Site: malaikaanisar.vercel.app
+Site: malaikaa.space
 Purpose: Developer portfolio
 Content: Projects, skills, blog
 ```
@@ -254,4 +254,4 @@ Next.js
 
 ---
 
-✅ If you want, I can also give you **the “Ultimate 2026 Portfolio Website Checklist” (50+ things most developers forget)** that can make sites like **malaikaanisar.vercel.app rank much faster.
+✅ If you want, I can also give you **the “Ultimate 2026 Portfolio Website Checklist” (50+ things most developers forget)** that can make sites like **malaikaa.space rank much faster.

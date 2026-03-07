@@ -6,7 +6,7 @@
 
 > A modern, SEO-optimized personal website and blog built with Next.js and Notion as a headless CMS.
 
-[**🌐 Live Site**](https://malaikaanisar.vercel.app)
+[**🌐 Live Site**](https://malaikaa.space)
 
 ---
 
@@ -67,10 +67,10 @@ Create a `.env.local` file with:
 NOTION_TOKEN=your_notion_api_token
 NOTION_DATABASE_ID=your_notion_database_id
 NEXT_PUBLIC_URL=http://localhost:3000
-SITE_URL=https://malaikaanisar.vercel.app
+SITE_URL=https://malaikaa.space
 ```
 
-For production (Vercel), set `NEXT_PUBLIC_URL=https://malaikaanisar.vercel.app`.
+For production (Vercel), set `NEXT_PUBLIC_URL=https://malaikaa.space`.
 
 ### Getting Notion Credentials
 
@@ -156,8 +156,8 @@ src/
 Set these in your Vercel project settings:
 - `NOTION_TOKEN`
 - `NOTION_DATABASE_ID`
-- `NEXT_PUBLIC_URL` = `https://malaikaanisar.vercel.app`
-- `SITE_URL` = `https://malaikaanisar.vercel.app`
+- `NEXT_PUBLIC_URL` = `https://malaikaa.space`
+- `SITE_URL` = `https://malaikaa.space`
 
 ## License
 

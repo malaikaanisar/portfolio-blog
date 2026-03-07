@@ -26,7 +26,7 @@ User-agent: Cohere-AI
 Allow: /
 
 # Host
-Host: https://malaikaanisar.vercel.app
+Host: https://malaikaa.space
 
 # Sitemaps
-Sitemap: https://malaikaanisar.vercel.app/sitemap.xml
+Sitemap: https://malaikaa.space/sitemap.xml

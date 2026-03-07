@@ -22,7 +22,7 @@ import {
   VideosWorthWatching,
 } from '../data/lifeApi';
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
 const seoTitle = 'About — Malaika Nisar';
 const seoDescription =

@@ -7,7 +7,7 @@ import { Container } from '../components/Container';
 import { ExternalLink } from '../components/ExternalLink';
 import { SocialMedia, Work, Name, CompaniesLinks } from '../data/lifeApi';
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
 const seoTitle = 'Resume — Malaika Nisar';
 const seoDescription =
@@ -109,7 +109,7 @@ export default function ResumePage() {
                 href={SITE_URL}
                 className="hover:text-primary transition-colors"
               >
-                malaikaanisar.vercel.app
+                malaikaa.space
               </a>
               <span>Rahim Yar Khan, Pakistan</span>
             </div>

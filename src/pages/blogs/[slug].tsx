@@ -13,7 +13,7 @@ type Props = {
   noteContent: any[];
 };
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
 export default function Blog({
   note: { title, description, createdAt, slug, tags, coverImage },

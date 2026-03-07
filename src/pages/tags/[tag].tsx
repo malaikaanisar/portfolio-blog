@@ -7,7 +7,7 @@ import { BlogPreview } from '../../components/blogs/BlogPreview';
 import { BlogPost, notesApi } from '../../lib/notesApi';
 import { slugifyTag } from '../../lib/slugify';
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
 interface Props {
   tag: string;

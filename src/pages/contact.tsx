@@ -9,7 +9,7 @@ import { SocialMedia } from '../data/lifeApi';
 import { LinkedInIcon } from '../components/icons/LinkedInIcon';
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+  process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
 const seoTitle = 'Contact — Malaika Nisar';
 const seoDescription =

@@ -13,7 +13,7 @@ import { Header } from '../components/Header';
 import '../styles/index.css';
 import '../styles/prism.css';
 
-const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaanisar.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
 function usePrevious(value: string) {
   let ref = useRef<string>();
