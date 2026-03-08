@@ -21,7 +21,7 @@ export default function Blog({
   previousPathname,
 }: Props & { previousPathname: string }) {
   const url = `${SITE_URL}/blogs/${slug}`;
-  const openGraphImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`;
+  const openGraphImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&tags=${encodeURIComponent(tags.join(','))}&date=${encodeURIComponent(createdAt)}`;
 
   useEffect(() => {
     Prism.highlightAll();
@@ -35,6 +35,7 @@ export default function Blog({
         canonical={url}
         openGraph={{
           type: 'article',
+          url: url,
           article: {
             publishedTime: createdAt,
             authors: ['https://www.linkedin.com/in/malaikaanisar'],
@@ -46,9 +47,20 @@ export default function Blog({
               width: 1200,
               height: 630,
               alt: title,
+              type: 'image/png',
             },
           ],
         }}
+        twitter={{
+          handle: '@malaikanisar',
+          cardType: 'summary_large_image',
+        }}
+        additionalMetaTags={[
+          { name: 'twitter:title', content: title },
+          { name: 'twitter:description', content: description },
+          { name: 'twitter:image', content: openGraphImageUrl },
+          { name: 'twitter:image:alt', content: title },
+        ]}
       />
       <BreadcrumbJsonLd
         itemListElements={[

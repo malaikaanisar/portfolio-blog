@@ -45,7 +45,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
             'Malaika Nisar is a results-driven Digital Marketer specializing in social media marketing, content strategy, and data-driven campaigns.',
           images: [
             {
-              url: `${SITE_URL}/api/og?title=Malaika+Nisar&description=Digital+Marketer`,
+              url: `${SITE_URL}/api/og?title=${encodeURIComponent('Malaika Nisar')}&description=${encodeURIComponent('Digital Marketer — Social Media Marketing, Content Strategy & Data-Driven Campaigns')}`,
               width: 1200,
               height: 630,
               alt: 'Malaika Nisar — Digital Marketer',

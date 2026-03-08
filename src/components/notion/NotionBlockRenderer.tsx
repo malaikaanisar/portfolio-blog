@@ -136,6 +136,59 @@ export const NotionBlockRenderer = ({ block }: Props) => {
           {caption_file && <figcaption>{caption_file}</figcaption>}
         </figure>
       );
+    case 'table': {
+      const hasColumnHeader = value.has_column_header;
+      const hasRowHeader = value.has_row_header;
+      const rows = value.children ?? [];
+      const headerRows = hasColumnHeader ? rows.slice(0, 1) : [];
+      const bodyRows = hasColumnHeader ? rows.slice(1) : rows;
+
+      return (
+        <div className="not-prose overflow-x-auto my-6 rounded-lg border border-zinc-200 dark:border-zinc-700/60">
+          <table className="min-w-full text-sm">
+            {headerRows.length > 0 && (
+              <thead>
+                {headerRows.map((row: any) => (
+                  <tr key={row.id} className="border-b border-zinc-200 dark:border-zinc-700/60 bg-zinc-50 dark:bg-zinc-800/60">
+                    {row.table_row.cells.map((cell: any, cellIndex: number) => (
+                      <th
+                        key={`${row.id}-${cellIndex}`}
+                        className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
+                      >
+                        <NotionText textItems={cell} />
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+            )}
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {bodyRows.map((row: any, rowIndex: number) => (
+                <tr
+                  key={row.id}
+                  className="transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
+                >
+                  {row.table_row.cells.map((cell: any, cellIndex: number) => (
+                    <td
+                      key={`${row.id}-${cellIndex}`}
+                      className={clsx(
+                        'px-4 py-3 text-zinc-700 dark:text-zinc-300',
+                        cellIndex === 0 && hasRowHeader && 'font-medium text-zinc-900 dark:text-zinc-100',
+                      )}
+                    >
+                      <NotionText textItems={cell} />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+    case 'table_row':
+      // table_row is handled inside the table case
+      return null;
     case 'bookmark':
       const href = value.url;
       return (
