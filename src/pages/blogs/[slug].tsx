@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 import { XIcon } from '../../components/icons/XIcon';
 import { BlogLayout } from '../../components/blogs/BlogLayout';
+import { CommentSection } from '../../components/comments/CommentSection';
 import { NotionBlockRenderer } from '../../components/notion/NotionBlockRenderer';
 import { BlogPost, notesApi } from '../../lib/notesApi';
 
@@ -99,6 +100,8 @@ export default function Blog({
               Click here to share this article with your friends on X if you liked it.
             </h4>
           </a>
+
+          <CommentSection slug={slug} />
         </div>
       </BlogLayout>
     </>
