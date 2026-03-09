@@ -69,15 +69,22 @@ const BlockTypeTransformLookup: Record<
   bookmark: noop,
   image: async (block: any) => {
     const contents = block[block.type];
-    const buffer = await fetch(contents[contents.type].url).then(async (res) =>
-      Buffer.from(await res.arrayBuffer()),
-    );
+    const imageUrl = contents[contents.type].url;
+    const response = await fetch(imageUrl);
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const contentType = response.headers.get('content-type') || 'image/png';
     const {
       base64,
       metadata: { height, width },
     } = await getPlaiceholder(buffer, { size: 64 });
     block.image['size'] = { height, width };
     block.image['placeholder'] = base64;
+
+    // Notion-hosted images (type 'file') use signed S3 URLs that expire after ~1 hour.
+    // Convert them to base64 data URLs so they remain valid after deployment.
+    if (contents.type === 'file') {
+      block.image['dataUrl'] = `data:${contentType};base64,${buffer.toString('base64')}`;
+    }
 
     return block;
   },

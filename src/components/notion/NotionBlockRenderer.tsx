@@ -88,23 +88,40 @@ export const NotionBlockRenderer = ({ block }: Props) => {
       );
     case 'child_page':
       return <p>{value.title}</p>;
-    case 'image':
-      const src = value.type === 'external' ? value.external.url : value.file.url;
+    case 'image': {
+      const imageSrc = value.dataUrl
+        ? value.dataUrl
+        : value.type === 'external'
+          ? value.external.url
+          : value.file.url;
       const caption = value.caption ? value.caption[0]?.plain_text : '';
       return (
         <figure>
-          <Image
-            className="object-cover"
-            placeholder="blur"
-            src={src}
-            alt={caption}
-            blurDataURL={value.placeholder}
-            width={value.size.width}
-            height={value.size.height}
-          />
+          {value.dataUrl ? (
+            // Notion-hosted images stored as base64 to avoid expiring S3 URLs
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className="object-cover rounded-lg w-full"
+              src={imageSrc}
+              alt={caption || ''}
+              width={value.size?.width}
+              height={value.size?.height}
+            />
+          ) : (
+            <Image
+              className="object-cover"
+              placeholder="blur"
+              src={imageSrc}
+              alt={caption || ''}
+              blurDataURL={value.placeholder}
+              width={value.size?.width}
+              height={value.size?.height}
+            />
+          )}
           {caption && <figcaption>{caption}</figcaption>}
         </figure>
       );
+    }
     case 'divider':
       return <hr key={id} />;
     case 'quote':
