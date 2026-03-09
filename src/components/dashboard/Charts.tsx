@@ -14,39 +14,38 @@ interface LineChartProps {
 }
 
 export function LineChart({ labels, datasets, height = 200 }: LineChartProps) {
-  const { paths, gridLines, yLabels, xLabels } = useMemo(() => {
+  const svgWidth = 800;
+  const svgHeight = 280;
+  const padding = { top: 20, right: 20, bottom: 36, left: 50 };
+
+  const { paths, gridLines, xLabels } = useMemo(() => {
     const allValues = datasets.flatMap((d) => d.data);
     const maxVal = Math.max(...allValues, 1);
-    const minVal = 0;
-    const range = maxVal - minVal || 1;
+    const range = maxVal || 1;
 
-    const padding = { top: 20, right: 16, bottom: 32, left: 48 };
-    const w = 100; // percentage-based
-    const h = height;
-    const chartW = w;
-    const chartH = h - padding.top - padding.bottom;
+    const chartW = svgWidth - padding.left - padding.right;
+    const chartH = svgHeight - padding.top - padding.bottom;
 
     // Y-axis grid lines (5 lines)
     const gridCount = 4;
     const gridLines = Array.from({ length: gridCount + 1 }, (_, i) => {
       const ratio = i / gridCount;
       const y = padding.top + chartH - ratio * chartH;
-      const value = Math.round(minVal + ratio * range);
+      const value = Math.round(ratio * range);
       return { y, value };
     });
 
     // Build SVG paths for each dataset
     const paths = datasets.map((dataset) => {
       const points = dataset.data.map((val, i) => {
-        const x = padding.left + (i / Math.max(dataset.data.length - 1, 1)) * (chartW - padding.left - padding.right);
-        const y = padding.top + chartH - ((val - minVal) / range) * chartH;
-        return { x, y };
+        const x = padding.left + (i / Math.max(dataset.data.length - 1, 1)) * chartW;
+        const y = padding.top + chartH - (val / range) * chartH;
+        return { x, y, val };
       });
 
       const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
-
-      // Area path (fill under line)
-      const areaPath = `${linePath} L${points[points.length - 1].x},${padding.top + chartH} L${points[0].x},${padding.top + chartH} Z`;
+      const baseY = padding.top + chartH;
+      const areaPath = `${linePath} L${points[points.length - 1].x},${baseY} L${points[0].x},${baseY} Z`;
 
       return { linePath, areaPath, points, color: dataset.color, label: dataset.label };
     });
@@ -55,18 +54,16 @@ export function LineChart({ labels, datasets, height = 200 }: LineChartProps) {
     const step = Math.max(1, Math.floor(labels.length / 7));
     const xLabels = labels
       .filter((_, i) => i % step === 0 || i === labels.length - 1)
-      .map((label, idx, arr) => ({
-        label,
-        x: padding.left + (labels.indexOf(label) / Math.max(labels.length - 1, 1)) * (chartW - padding.left - padding.right),
-      }));
+      .map((label) => {
+        const idx = labels.indexOf(label);
+        return {
+          label,
+          x: padding.left + (idx / Math.max(labels.length - 1, 1)) * chartW,
+        };
+      });
 
-    return {
-      paths,
-      gridLines,
-      yLabels: gridLines,
-      xLabels,
-    };
-  }, [labels, datasets, height]);
+    return { paths, gridLines, xLabels };
+  }, [labels, datasets]);
 
   return (
     <div className="w-full">
@@ -81,26 +78,25 @@ export function LineChart({ labels, datasets, height = 200 }: LineChartProps) {
       </div>
 
       <svg
-        viewBox={`0 0 100 ${height}`}
+        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         className="w-full"
-        preserveAspectRatio="none"
         style={{ height }}
       >
         {/* Grid lines */}
         {gridLines.map((line, i) => (
           <g key={i}>
             <line
-              x1="48"
+              x1={padding.left}
               y1={line.y}
-              x2="84"
+              x2={svgWidth - padding.right}
               y2={line.y}
               stroke="rgba(255,255,255,0.06)"
-              strokeWidth="0.15"
+              strokeWidth="1"
             />
             <text
-              x="46"
-              y={line.y + 0.8}
-              fontSize="2.8"
+              x={padding.left - 8}
+              y={line.y}
+              fontSize="11"
               fill="rgba(255,255,255,0.3)"
               textAnchor="end"
               dominantBaseline="middle"
@@ -116,7 +112,7 @@ export function LineChart({ labels, datasets, height = 200 }: LineChartProps) {
             key={`area-${i}`}
             d={p.areaPath}
             fill={p.color}
-            fillOpacity="0.08"
+            fillOpacity="0.1"
           />
         ))}
 
@@ -127,7 +123,7 @@ export function LineChart({ labels, datasets, height = 200 }: LineChartProps) {
             d={p.linePath}
             fill="none"
             stroke={p.color}
-            strokeWidth="0.4"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
@@ -135,17 +131,15 @@ export function LineChart({ labels, datasets, height = 200 }: LineChartProps) {
 
         {/* Data points */}
         {paths.map((p, i) =>
-          p.points
-            .filter((_, idx) => idx % Math.max(1, Math.floor(p.points.length / 10)) === 0)
-            .map((point, j) => (
-              <circle
-                key={`dot-${i}-${j}`}
-                cx={point.x}
-                cy={point.y}
-                r="0.6"
-                fill={p.color}
-              />
-            ))
+          p.points.map((point, j) => (
+            <g key={`dot-${i}-${j}`}>
+              <circle cx={point.x} cy={point.y} r="3" fill={p.color} opacity="0.8" />
+              {/* Hover target */}
+              <circle cx={point.x} cy={point.y} r="10" fill="transparent">
+                <title>{`${datasets[i].label}: ${point.val}`}</title>
+              </circle>
+            </g>
+          ))
         )}
 
         {/* X-axis labels */}
@@ -153,9 +147,9 @@ export function LineChart({ labels, datasets, height = 200 }: LineChartProps) {
           <text
             key={i}
             x={l.x}
-            y={height - 8}
-            fontSize="2.5"
-            fill="rgba(255,255,255,0.3)"
+            y={svgHeight - 8}
+            fontSize="11"
+            fill="rgba(255,255,255,0.35)"
             textAnchor="middle"
           >
             {l.label}
