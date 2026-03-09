@@ -28,6 +28,20 @@ function usePrevious(value: string) {
 
 export default function App({ Component, pageProps, router }: AppProps) {
   let previousPathname = usePrevious(router.pathname);
+  const isDashboard = router.pathname.startsWith('/dashboard');
+
+  // Dashboard pages get their own layout (no site header/footer/background)
+  if (isDashboard) {
+    return (
+      <>
+        <ThemeProvider attribute="class" forcedTheme="dark">
+          <div className={GeistSans.className}>
+            <Component previousPathname={previousPathname} {...pageProps} />
+          </div>
+        </ThemeProvider>
+      </>
+    );
+  }
 
   return (
     <>
