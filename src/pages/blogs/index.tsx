@@ -1,5 +1,6 @@
 import { GetStaticProps } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
+import { useState } from 'react';
 
 import { Badge } from '../../components/Badge';
 import { PageLayout } from '../../components/PageLayout';
@@ -19,6 +20,10 @@ interface Props {
 }
 
 export default function Blogs({ notes, tags }: Props) {
+  const MAX_VISIBLE_TAGS = 6;
+  const [showAllTags, setShowAllTags] = useState(false);
+  const visibleTags = showAllTags ? tags : tags.slice(0, MAX_VISIBLE_TAGS);
+  const hiddenCount = tags.length - MAX_VISIBLE_TAGS;
   return (
     <>
       <NextSeo
@@ -48,11 +53,19 @@ export default function Blogs({ notes, tags }: Props) {
       >
         <h3 className="text-2xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100">Tags</h3>
         <div className="mt-4 flex max-w-xl flex-wrap gap-1 font-mono">
-          {tags.map((tag) => (
+          {visibleTags.map((tag) => (
             <Badge key={tag} href={`/tags/${slugifyTag(tag)}`}>
-              #{tag}
+              {tag}
             </Badge>
           ))}
+          {hiddenCount > 0 && (
+            <button
+              onClick={() => setShowAllTags(!showAllTags)}
+              className="text-sm font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1"
+            >
+              {showAllTags ? 'Show less' : `+${hiddenCount} more`}
+            </button>
+          )}
         </div>
 
         <div className="mt-24 md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">

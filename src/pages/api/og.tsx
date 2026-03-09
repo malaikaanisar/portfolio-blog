@@ -78,11 +78,12 @@ const generateImage = async (req: NextRequest) => {
       ? description.slice(0, 97) + '...'
       : description
     : '';
-  const tagList = tags
+  const allTags = tags
     .split(',')
     .map((t) => t.trim())
-    .filter(Boolean)
-    .slice(0, 4);
+    .filter(Boolean);
+  const tagList = allTags.slice(0, 3);
+  const extraTagCount = allTags.length - tagList.length;
   const formattedDate = date ? formatDate(date) : '';
 
   return new ImageResponse(
@@ -158,19 +159,24 @@ const generateImage = async (req: NextRequest) => {
 
           {/* Tags */}
           {tagList.length > 0 && (
-            <div tw="flex mt-6 flex-wrap">
+            <div tw="flex mt-6 flex-wrap items-center">
               {tagList.map((tag, i) => (
                 <span
                   key={i}
-                  tw="text-sm font-medium mr-3 px-3 py-1 rounded-full"
+                  tw="text-sm font-medium mr-2 px-3 py-1 rounded-full"
                   style={{
                     background: 'rgba(251, 37, 118, 0.15)',
                     color: '#FB2576',
                   }}
                 >
-                  #{tag}
+                  {tag}
                 </span>
               ))}
+              {extraTagCount > 0 && (
+                <span tw="text-sm text-zinc-500 ml-1">
+                  +{extraTagCount} more
+                </span>
+              )}
             </div>
           )}
 

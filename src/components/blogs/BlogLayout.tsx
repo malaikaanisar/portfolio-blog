@@ -1,8 +1,11 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 
 import { formatDate } from '../../lib/date';
+import { slugifyTag } from '../../lib/slugify';
+import { Badge } from '../Badge';
 import { Container } from '../Container';
 import { Prose } from '../Prose';
 import { ArrowLeftIcon } from '../icons/ArrowLeftIcon';
@@ -13,6 +16,7 @@ interface Props {
     title: string;
     description: string;
     date: string;
+    tags?: string[];
   };
   previousPathname?: string;
 }
@@ -39,6 +43,15 @@ export const BlogLayout = ({ children, meta, previousPathname }: Props) => {
               <h1 className="mt-6 text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
                 {meta.title}
               </h1>
+              {meta.tags && meta.tags.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {meta.tags.map((tag) => (
+                    <Badge key={tag} href={`/tags/${slugifyTag(tag)}`}>
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
               <time
                 dateTime={meta.date}
                 className="order-first flex items-center text-base text-zinc-400 dark:text-zinc-500"

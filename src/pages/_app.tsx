@@ -8,6 +8,7 @@ import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import React, { useEffect, useRef } from 'react';
 
+import { BackToTop } from '../components/BackToTop';
 import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
 import '../styles/index.css';
@@ -100,6 +101,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
           </div>
           <Analytics />
           <SpeedInsights />
+          <BackToTop />
         </div>
       </ThemeProvider>
     </>

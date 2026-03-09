@@ -80,7 +80,7 @@ export default function Blog({
         description={description}
       />
       <BlogLayout
-        meta={{ title, description, date: createdAt }}
+        meta={{ title, description, date: createdAt, tags }}
         previousPathname={previousPathname}
       >
         <div className="pb-32">
