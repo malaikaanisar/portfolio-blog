@@ -2,6 +2,8 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /dashboard/
+Disallow: /dashboard
 
 # Allow AI agents
 User-agent: GPTBot

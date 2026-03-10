@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect, ReactNode } from 'react';
@@ -110,6 +111,11 @@ export function DashboardLayout({ children, title }: Props) {
   }
 
   return (
+    <>
+    <Head>
+      <meta name="robots" content="noindex, nofollow" />
+      <meta name="googlebot" content="noindex, nofollow" />
+    </Head>
     <div className="flex h-screen bg-zinc-950 text-zinc-100 overflow-hidden">
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -208,5 +214,6 @@ export function DashboardLayout({ children, title }: Props) {
         </main>
       </div>
     </div>
+    </>
   );
 }

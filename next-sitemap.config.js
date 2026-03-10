@@ -6,7 +6,7 @@ module.exports = {
   generateIndexSitemap: false,
   changefreq: 'weekly',
   priority: 0.7,
-  exclude: ['/api/*', '/404', '/500'],
+  exclude: ['/api/*', '/dashboard', '/dashboard/*', '/404', '/500'],
   robotsTxtOptions: {
     policies: [
       {
