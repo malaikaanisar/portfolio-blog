@@ -121,12 +121,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       sessions: parseInt(row.metricValues?.[2]?.value || '0'),
     }));
 
-    // Parse top pages
-    const topPages = (pagesRes[0]?.rows || []).map((row) => ({
-      path: row.dimensionValues?.[0]?.value || '',
-      views: parseInt(row.metricValues?.[0]?.value || '0'),
-      users: parseInt(row.metricValues?.[1]?.value || '0'),
-    }));
+    // Parse top pages (exclude /dashboard paths)
+    const topPages = (pagesRes[0]?.rows || [])
+      .map((row) => ({
+        path: row.dimensionValues?.[0]?.value || '',
+        views: parseInt(row.metricValues?.[0]?.value || '0'),
+        users: parseInt(row.metricValues?.[1]?.value || '0'),
+      }))
+      .filter((p) => !p.path.startsWith('/dashboard'));
 
     // Parse traffic sources
     const trafficSources = (sourcesRes[0]?.rows || []).map((row) => ({

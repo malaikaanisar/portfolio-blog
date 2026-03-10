@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@google-analytics/data": "^5.2.1",
+    "@google/generative-ai": "^0.24.1",
     "@headlessui/react": "^1.7.2",
     "@heroicons/react": "^2.0.18",
     "@mapbox/rehype-prism": "^0.8.0",

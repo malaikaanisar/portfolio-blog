@@ -11,6 +11,7 @@ import { SocialLink } from '../components/SocialLink';
 import { BlogPreview } from '../components/blogs/BlogPreview';
 import { About, Name, SocialMedia } from '../data/lifeApi';
 import { BlogPost, notesApi } from '../lib/notesApi';
+import { useCommentCounts } from '../lib/useCommentCounts';
 
 const seoTitle = 'Malaika Nisar';
 const seoDescription =
@@ -23,6 +24,9 @@ type Props = {
 };
 
 export default function Home({ latestBlogs }: Props) {
+  const slugs = latestBlogs.map((b) => b.slug);
+  const commentCounts = useCommentCounts(slugs);
+
   const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -106,7 +110,7 @@ export default function Home({ latestBlogs }: Props) {
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
             {latestBlogs.map((blogPost) => (
-              <BlogPreview key={blogPost.slug} post={blogPost} dense />
+              <BlogPreview key={blogPost.slug} post={blogPost} dense commentCount={commentCounts[blogPost.slug]} />
             ))}
           </div>
           <div className="lg:ml-auto space-y-10 lg:pl-16 xl:pl-24">

@@ -11,6 +11,10 @@ interface Comment {
   comment: string;
   avatar: string;
   createdAt: string;
+  adminReply?: {
+    text: string;
+    repliedAt: string;
+  };
 }
 
 interface Props {
@@ -218,51 +222,77 @@ export const CommentSection = ({ slug }: Props) => {
       </form>
 
       {/* Comments list */}
-      <div className="mt-10 space-y-1">
+      <div className="mt-10">
         {loading ? (
-          <div className="flex justify-center py-12">
+          <div className="flex justify-center py-16">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-300 border-t-primary" />
           </div>
         ) : comments.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-zinc-400 dark:text-zinc-500 text-sm">
+          <div className="text-center py-16">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 mb-3">
+              <svg className="w-5 h-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+              </svg>
+            </div>
+            <p className="text-zinc-500 dark:text-zinc-400 text-sm">
               No comments yet. Be the first to share your thoughts!
             </p>
           </div>
         ) : (
-          comments.map((c, i) => (
-            <div
-              key={c._id}
-              className="group rounded-xl px-4 py-3.5 -mx-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors"
-            >
-              <div className="flex gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={c.avatar}
-                  alt={c.name}
-                  className="w-9 h-9 rounded-full flex-shrink-0 ring-1 ring-zinc-200 dark:ring-zinc-700"
-                  width={36}
-                  height={36}
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {comments.map((c) => (
+              <div key={c._id} className="py-5 first:pt-0">
+                {/* Comment header */}
+                <div className="flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={c.avatar}
+                    alt={c.name}
+                    className="not-prose w-8 h-8 rounded-full flex-shrink-0 ring-1 ring-zinc-200/80 dark:ring-zinc-700/80"
+                    width={32}
+                    height={32}
+                  />
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-[13px] font-semibold text-zinc-900 dark:text-zinc-100">
                       {c.name}
                     </span>
-                    <span className="text-[11px] text-zinc-400 dark:text-zinc-500">
-                      ·
-                    </span>
-                    <span className="text-[11px] text-zinc-400 dark:text-zinc-500">
+                    <time className="text-[11px] text-zinc-400 dark:text-zinc-500">
                       {formatDistanceToNow(new Date(c.createdAt), { addSuffix: true })}
-                    </span>
+                    </time>
                   </div>
-                  <p className="mt-1 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-300 whitespace-pre-wrap break-words">
+                </div>
+
+                {/* Comment body */}
+                <div className="ml-11">
+                  <p className="mt-1.5 text-[14px] leading-[1.7] text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap break-words">
                     {c.comment}
                   </p>
+
+                  {/* Admin reply */}
+                  {c.adminReply && (
+                    <div className="mt-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10">
+                          <svg className="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
+                          </svg>
+                        </div>
+                        <span className="text-[12px] font-semibold text-primary">
+                          Malaika
+                        </span>
+                        <span className="text-[10px] text-zinc-400 dark:text-zinc-500">
+                          {formatDistanceToNow(new Date(c.adminReply.repliedAt), { addSuffix: true })}
+                        </span>
+                      </div>
+                      <p className="mt-1.5 text-[13px] leading-[1.7] text-zinc-600 dark:text-zinc-300 whitespace-pre-wrap break-words">
+                        {c.adminReply.text}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>

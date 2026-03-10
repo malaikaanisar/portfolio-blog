@@ -1,12 +1,13 @@
 import { GetStaticProps } from 'next';
 import { BreadcrumbJsonLd, NextSeo } from 'next-seo';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Badge } from '../../components/Badge';
 import { PageLayout } from '../../components/PageLayout';
 import { BlogPreview } from '../../components/blogs/BlogPreview';
 import { BlogPost, notesApi } from '../../lib/notesApi';
 import { slugifyTag } from '../../lib/slugify';
+import { useCommentCounts } from '../../lib/useCommentCounts';
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
@@ -20,6 +21,8 @@ interface Props {
 }
 
 export default function Blogs({ notes, tags }: Props) {
+  const slugs = useMemo(() => notes.map((n) => n.slug), [notes]);
+  const commentCounts = useCommentCounts(slugs);
   const MAX_VISIBLE_TAGS = 6;
   const [showAllTags, setShowAllTags] = useState(false);
   const visibleTags = showAllTags ? tags : tags.slice(0, MAX_VISIBLE_TAGS);
@@ -71,7 +74,7 @@ export default function Blogs({ notes, tags }: Props) {
         <div className="mt-24 md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
           <div className="flex max-w-3xl flex-col space-y-16">
             {notes.map((post) => (
-              <BlogPreview key={post.slug} post={post} />
+              <BlogPreview key={post.slug} post={post} commentCount={commentCounts[post.slug]} />
             ))}
           </div>
         </div>

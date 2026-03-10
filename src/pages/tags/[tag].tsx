@@ -2,10 +2,13 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { NextSeo } from 'next-seo';
 import React from 'react';
 
+import { useMemo } from 'react';
+
 import { PageLayout } from '../../components/PageLayout';
 import { BlogPreview } from '../../components/blogs/BlogPreview';
 import { BlogPost, notesApi } from '../../lib/notesApi';
 import { slugifyTag } from '../../lib/slugify';
+import { useCommentCounts } from '../../lib/useCommentCounts';
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL || 'https://malaikaa.space';
 
@@ -16,6 +19,8 @@ interface Props {
 }
 
 export default function Tag({ tag, displayTag, relatedNotes }: Props) {
+  const slugs = useMemo(() => relatedNotes.map((n) => n.slug), [relatedNotes]);
+  const commentCounts = useCommentCounts(slugs);
   const seoTitle = `${displayTag} — Blog Posts by Malaika Nisar`;
   const seoDescription = `Browse all blog posts tagged with ${displayTag} — insights on digital marketing, social media, and more by Malaika Nisar.`;
 
@@ -40,7 +45,7 @@ export default function Tag({ tag, displayTag, relatedNotes }: Props) {
         <div className="mt-24 md:border-l md:border-zinc-100 md:pl-6 md:dark:border-zinc-700/40">
           <div className="flex max-w-3xl flex-col space-y-16">
             {relatedNotes.map((post) => (
-              <BlogPreview key={post.slug} post={post} />
+              <BlogPreview key={post.slug} post={post} commentCount={commentCounts[post.slug]} />
             ))}
           </div>
         </div>

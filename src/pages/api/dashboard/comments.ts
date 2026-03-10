@@ -42,6 +42,56 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
   }
 
+  // PUT - Reply to a comment
+  if (req.method === 'PUT') {
+    try {
+      const { id, reply } = req.body;
+      if (!id || typeof id !== 'string') {
+        return res.status(400).json({ error: 'Missing comment ID' });
+      }
+
+      if (reply !== undefined && reply !== null && typeof reply !== 'string') {
+        return res.status(400).json({ error: 'Reply must be a string' });
+      }
+
+      const trimmedReply = reply?.trim();
+
+      // If reply is empty/null, remove the reply
+      if (!trimmedReply) {
+        await collection.updateOne(
+          { _id: new ObjectId(id) },
+          { $unset: { adminReply: '' } },
+        );
+        return res.status(200).json({ success: true, removed: true });
+      }
+
+      if (trimmedReply.length > 1000) {
+        return res.status(400).json({ error: 'Reply must be under 1000 characters' });
+      }
+
+      const result = await collection.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $set: {
+            adminReply: {
+              text: trimmedReply,
+              repliedAt: new Date(),
+            },
+          },
+        },
+      );
+
+      if (result.matchedCount === 0) {
+        return res.status(404).json({ error: 'Comment not found' });
+      }
+
+      return res.status(200).json({ success: true });
+    } catch (error) {
+      console.error('Failed to reply to comment:', error);
+      return res.status(500).json({ error: 'Failed to reply' });
+    }
+  }
+
   // DELETE - Delete a comment
   if (req.method === 'DELETE') {
     try {
