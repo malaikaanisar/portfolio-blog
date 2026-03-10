@@ -278,6 +278,8 @@ function BlogWriter({ model }: { model?: string }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [repurposing, setRepurposing] = useState(false);
   const [repurposeResult, setRepurposeResult] = useState<{ social: string; email: string; thread: string } | null>(null);
+  const [generatedDescription, setGeneratedDescription] = useState('');
+  const [generatedTags, setGeneratedTags] = useState<string[]>([]);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   // Word count & reading time
@@ -289,7 +291,7 @@ function BlogWriter({ model }: { model?: string }) {
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null); setBlogContent(''); setPublishResult(null); setModelUsed(null);
-    setRepurposeResult(null); setPreviewMode('preview');
+    setRepurposeResult(null); setGeneratedDescription(''); setGeneratedTags([]); setPreviewMode('preview');
     setIsStreaming(true);
     try {
       const res = await fetch('/api/dashboard/ai/generate', {
@@ -312,6 +314,8 @@ function BlogWriter({ model }: { model?: string }) {
       const data = await res.json();
       setBlogContent(data.blogContent || '');
       setModelUsed(data.modelUsed || null);
+      if (data.description) setGeneratedDescription(data.description);
+      if (data.tags) setGeneratedTags(data.tags);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error');
     }
@@ -323,9 +327,9 @@ function BlogWriter({ model }: { model?: string }) {
     try {
       const result = await callPublish({
         title,
-        description: `AI-generated blog post about ${title}`,
+        description: generatedDescription || `${title} — insights, strategies, and actionable tips for digital marketers and brand owners.`,
         content: blogContent,
-        tags: keywords ? keywords.split(',').map(k => k.trim()).filter(Boolean) : ['Digital Marketing'],
+        tags: generatedTags.length > 0 ? generatedTags : (keywords ? keywords.split(',').map(k => k.trim()).filter(Boolean) : ['Digital Marketing']),
         published: scheduleMode ? false : autoPublish,
         scheduleAt: scheduleMode && scheduleDate ? new Date(scheduleDate).toISOString() : undefined,
       });

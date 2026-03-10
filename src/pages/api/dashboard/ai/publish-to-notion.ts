@@ -178,7 +178,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     const slug = slugify(title);
-    const now = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const publishDate = scheduleAt
+      ? new Date(scheduleAt).toISOString().split('T')[0]
+      : new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     const shouldPublish = scheduleAt ? false : published !== false; // if scheduling, start unpublished
 
     // Build Notion blocks from markdown (Notion API has a 100-block limit per request)
@@ -204,7 +206,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           checkbox: shouldPublish,
         },
         publishedAt: {
-          date: { start: now },
+          date: { start: publishDate },
         },
         hashtags: {
           multi_select: (tags || ['Digital Marketing']).map((tag) => ({ name: tag })),

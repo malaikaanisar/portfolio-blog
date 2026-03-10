@@ -309,7 +309,32 @@ Return ONLY the blog post content in Markdown format. No JSON wrapping.`;
       const blogContent = text.trim();
       const blogWithFooter = blogContent + BLOG_FOOTER;
 
-      return res.status(200).json({ blogContent: blogWithFooter, modelUsed });
+      // Generate professional meta description + 10 tags from the content
+      const metaPrompt = `Given this blog post titled "${title}", generate:
+1. A professional SEO meta description (120-155 characters, compelling, no quotes around it)
+2. Exactly 10 relevant tags/hashtags for this blog post (single words or short phrases, relevant to digital marketing, social media, branding, and the specific topic)
+
+Blog excerpt:
+${blogContent.slice(0, 1500)}
+
+Return ONLY valid JSON in this exact format (no markdown, no extra text):
+{"description": "Your meta description here", "tags": ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10"]}`;
+
+      let metaDescription = `${title} — insights, strategies, and actionable tips for digital marketers and brand owners.`;
+      let autoTags = keywordList
+        ? keywordList.split(',').map((k: string) => k.trim()).filter(Boolean)
+        : ['Digital Marketing'];
+
+      try {
+        const { text: metaText } = await generateWithFallback(metaPrompt, preferredModel);
+        const metaJson = JSON.parse(metaText.replace(/```json?\s*/g, '').replace(/```/g, '').trim());
+        if (metaJson.description) metaDescription = metaJson.description;
+        if (Array.isArray(metaJson.tags) && metaJson.tags.length > 0) autoTags = metaJson.tags.slice(0, 10);
+      } catch {
+        // fallback values already set
+      }
+
+      return res.status(200).json({ blogContent: blogWithFooter, description: metaDescription, tags: autoTags, modelUsed });
     }
 
     /* ─── 10. Content repurpose ─── */
