@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Client } from '@notionhq/client';
 import { connectToDatabase } from '../../../../lib/mongodb';
+import { verifyToken } from '../../../../lib/auth';
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
@@ -16,7 +17,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const authHeader = req.headers.authorization;
   const querySecret = req.query.secret;
 
-  const hasDashboardAuth = authHeader?.startsWith('Bearer ');
+  const dashboardToken = req.cookies['dashboard_token'];
+  const hasDashboardAuth = (dashboardToken && verifyToken(dashboardToken)) || authHeader?.startsWith('Bearer ');
   const hasCronAuth = cronSecret && (querySecret === cronSecret || authHeader === `Bearer ${cronSecret}`);
 
   if (!hasDashboardAuth && !hasCronAuth) {

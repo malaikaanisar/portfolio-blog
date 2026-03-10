@@ -197,10 +197,10 @@ export default function DashboardComments() {
             placeholder="Search comments..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="w-full rounded-xl border border-zinc-800 bg-zinc-900 pl-9 pr-4 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+            className="w-full rounded-xl border border-zinc-700/80 bg-zinc-800/40 pl-9 pr-4 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-600 focus:bg-zinc-800/60 transition-all"
           />
         </div>
-        <div className="flex items-center gap-2 text-xs text-zinc-500">
+        <div className="flex items-center gap-2 text-[11px] text-zinc-500">
           <span>{total} total</span>
           {selectedComments.size > 0 && (
             <>
@@ -232,7 +232,7 @@ export default function DashboardComments() {
       ) : (
         <>
           {/* Header row */}
-          <div className="hidden sm:flex items-center gap-3 px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+          <div className="hidden sm:flex items-center gap-3 px-4 py-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
             <div className="w-5">
               <input
                 type="checkbox"
@@ -425,21 +425,21 @@ export default function DashboardComments() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-6">
+            <div className="flex items-center justify-center gap-3 mt-6 pt-4 border-t border-zinc-800/60">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="rounded-lg px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="rounded-lg border border-zinc-800/60 px-3 py-1.5 text-[11px] text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 ← Previous
               </button>
-              <span className="text-xs text-zinc-500">
+              <span className="text-[11px] text-zinc-500 tabular-nums">
                 Page {page} of {totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="rounded-lg px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="rounded-lg border border-zinc-800/60 px-3 py-1.5 text-[11px] text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 Next →
               </button>

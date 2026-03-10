@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import clsx from 'clsx';
 import { DashboardLayout } from '../../components/dashboard/DashboardLayout';
@@ -15,7 +16,32 @@ import {
   ClockIcon,
   CpuChipIcon,
   CheckCircleIcon,
+  ArrowPathIcon,
+  ArrowsPointingOutIcon,
+  BookOpenIcon,
+  TagIcon,
+  AdjustmentsHorizontalIcon,
+  ClipboardDocumentCheckIcon,
+  DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
+
+/* ── Simple Markdown → HTML (no external dep) ────────── */
+function renderMarkdown(md: string): string {
+  return md
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold text-zinc-100 mt-5 mb-2">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 class="text-lg font-bold text-zinc-100 mt-6 mb-2">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold text-zinc-100 mt-6 mb-3">$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-zinc-100 font-semibold">$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-violet-400 hover:underline">$1</a>')
+    .replace(/^---+$/gm, '<hr class="border-zinc-700 my-4"/>')
+    .replace(/^- (.+)$/gm, '<li class="ml-4 list-disc text-zinc-300 text-sm leading-relaxed">$1</li>')
+    .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal text-zinc-300 text-sm leading-relaxed">$1</li>')
+    .replace(/\n{2,}/g, '</p><p class="text-sm text-zinc-300 leading-relaxed mb-3">')
+    .replace(/^(?!<[hlua]|<li|<hr|<p)(.+)$/gm, '<p class="text-sm text-zinc-300 leading-relaxed mb-3">$1</p>')
+    .replace(/<\/li>\n?<li/g, '</li><li');
+}
 
 /* ── Constants ───────────────────────────────────────── */
 const MODEL_OPTIONS = [
@@ -81,7 +107,10 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1800); }}
-      className="text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors px-2 py-0.5 rounded hover:bg-zinc-800"
+      className={clsx(
+        'text-[11px] px-2 py-0.5 rounded-md transition-all',
+        copied ? 'text-emerald-400 bg-emerald-500/10' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60',
+      )}
     >
       {copied ? '✓ Copied' : 'Copy'}
     </button>
@@ -105,7 +134,7 @@ function SubmitBtn({ loading, label = 'Generate' }: { loading: boolean; label?: 
     <button
       type="submit"
       disabled={loading}
-      className="rounded-xl bg-zinc-100 px-5 py-2.5 text-sm font-semibold text-zinc-900 hover:bg-white transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+      className="rounded-xl bg-zinc-100 px-5 py-2.5 text-[13px] font-semibold text-zinc-900 hover:bg-white transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm"
     >
       {loading ? <><Spinner /> Generating...</> : label}
     </button>
@@ -131,14 +160,23 @@ function ModelBadge({ model }: { model: string | null }) {
   );
 }
 
-const inputCls = 'w-full rounded-xl border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 transition-colors';
-const selectCls = 'w-full rounded-xl border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500 transition-colors';
+const inputCls = 'w-full rounded-xl border border-zinc-700/80 bg-zinc-800/40 px-4 py-2.5 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-600 focus:bg-zinc-800/60 transition-all';
+const selectCls = 'w-full rounded-xl border border-zinc-700/80 bg-zinc-800/40 px-4 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-zinc-600 focus:bg-zinc-800/60 transition-all';
 
 /* ── Main Page ───────────────────────────────────────── */
 export default function AiToolsPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabId>('blog');
   const [selectedModel, setSelectedModel] = useState('auto');
   const ActiveIcon = TABS.find(t => t.id === activeTab)!.icon;
+
+  // Sync tab from URL query param (?tab=social, ?tab=seo, etc.)
+  useEffect(() => {
+    const tabParam = router.query.tab as string | undefined;
+    if (tabParam && TABS.some(t => t.id === tabParam)) {
+      setActiveTab(tabParam as TabId);
+    }
+  }, [router.query.tab]);
 
   const modelForApi = selectedModel === 'auto' ? undefined : selectedModel;
 
@@ -150,23 +188,23 @@ export default function AiToolsPage() {
         {/* Header with model selector */}
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 border border-violet-500/20">
-              <SparklesIcon className="w-5 h-5 text-violet-400" />
+            <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/15 to-fuchsia-500/15 border border-violet-500/15">
+              <SparklesIcon className="w-[18px] h-[18px] text-violet-400" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-zinc-100">AI Marketing Tools</h1>
-              <p className="text-sm text-zinc-500 mt-0.5">
+              <h1 className="text-lg font-bold text-zinc-100 tracking-tight">AI Marketing Tools</h1>
+              <p className="text-[13px] text-zinc-500 mt-0.5">
                 Powered by Google Gemini — auto-rotating models to avoid quota limits.
               </p>
             </div>
           </div>
           {/* Model selector */}
           <div className="flex items-center gap-2">
-            <CpuChipIcon className="w-4 h-4 text-zinc-500" />
+            <CpuChipIcon className="w-3.5 h-3.5 text-zinc-500" />
             <select
               value={selectedModel}
               onChange={(e) => setSelectedModel(e.target.value)}
-              className="rounded-lg border border-zinc-700 bg-zinc-800/60 px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:border-zinc-500"
+              className="rounded-lg border border-zinc-700/80 bg-zinc-800/50 px-2.5 py-1.5 text-[11px] text-zinc-400 focus:outline-none focus:border-zinc-600 transition-all"
             >
               {MODEL_OPTIONS.map((m) => (
                 <option key={m.id} value={m.id}>{m.label}</option>
@@ -176,29 +214,30 @@ export default function AiToolsPage() {
         </div>
 
         {/* Tab grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-1.5">
+        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-1">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => setActiveTab(id)}
               className={clsx(
-                'flex flex-col items-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-all',
+                'relative flex flex-col items-center gap-1.5 rounded-xl border px-2 py-2.5 text-center transition-all duration-150',
                 activeTab === id
-                  ? 'border-violet-500/40 bg-violet-500/10 text-violet-300'
-                  : 'border-zinc-800 bg-zinc-900/60 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700',
+                  ? 'border-violet-500/30 bg-violet-500/8 text-violet-300 shadow-sm shadow-violet-500/5'
+                  : 'border-zinc-800/60 bg-zinc-900/40 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700/60 hover:bg-zinc-800/30',
               )}
             >
-              <Icon className="w-4 h-4" />
-              <span className="text-[10px] font-medium leading-tight">{label}</span>
+              {activeTab === id && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[2px] rounded-b-full bg-violet-400" />}
+              <Icon className="w-3.5 h-3.5" />
+              <span className="text-[9px] font-medium leading-tight">{label}</span>
             </button>
           ))}
         </div>
 
         {/* Active tool panel heading */}
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex items-center gap-2">
           <ActiveIcon className="w-4 h-4 text-violet-400" />
-          <h2 className="text-sm font-semibold text-zinc-300">{TABS.find(t => t.id === activeTab)!.label}</h2>
-          <span className="text-xs text-zinc-600">— {TABS.find(t => t.id === activeTab)!.desc}</span>
+          <h2 className="text-[13px] font-semibold text-zinc-200">{TABS.find(t => t.id === activeTab)!.label}</h2>
+          <span className="text-[11px] text-zinc-600">— {TABS.find(t => t.id === activeTab)!.desc}</span>
         </div>
 
         {activeTab === 'blog'      && <BlogWriter model={modelForApi} />}
@@ -216,48 +255,77 @@ export default function AiToolsPage() {
 }
 
 /* ═══════════════════════════════════════════════════════
-   0. FULL BLOG WRITER (NEW)
+   0. FULL BLOG WRITER — PROFESSIONAL EDITION
    ═══════════════════════════════════════════════════════ */
+const WORD_COUNT_OPTIONS = ['800-1200', '1200-1800', '1500-2500', '2500-3500'];
+
 function BlogWriter({ model }: { model?: string }) {
   const [title, setTitle] = useState('');
-  const [tags, setTags] = useState('');
   const [tone, setTone] = useState(TONES_BLOG[0]);
+  const [keywords, setKeywords] = useState('');
+  const [customInstructions, setCustomInstructions] = useState('');
+  const [targetLength, setTargetLength] = useState('1500-2500');
   const [blogContent, setBlogContent] = useState('');
   const [modelUsed, setModelUsed] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [publishResult, setPublishResult] = useState<{ url: string; scheduledFor?: string | null } | null>(null);
   const [scheduleMode, setScheduleMode] = useState(false);
   const [scheduleDate, setScheduleDate] = useState('');
   const [autoPublish, setAutoPublish] = useState(true);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'preview' | 'edit' | 'markdown'>('preview');
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [repurposing, setRepurposing] = useState(false);
+  const [repurposeResult, setRepurposeResult] = useState<{ social: string; email: string; thread: string } | null>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
+  // Word count & reading time
+  const wordCount = useMemo(() => blogContent.trim().split(/\s+/).filter(Boolean).length, [blogContent]);
+  const readingTime = useMemo(() => Math.max(1, Math.ceil(wordCount / 230)), [wordCount]);
+  const charCount = blogContent.length;
+
+  // Streaming AI blog writer
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); setError(null); setBlogContent(''); setPublishResult(null); setModelUsed(null);
+    setError(null); setBlogContent(''); setPublishResult(null); setModelUsed(null);
+    setRepurposeResult(null); setPreviewMode('preview');
+    setIsStreaming(true);
     try {
-      const data = await callAI<{ blogContent: string; modelUsed: string }>({
-        action: 'write-blog',
-        title,
-        tags: tags || undefined,
-        tone,
-        model,
+      const res = await fetch('/api/dashboard/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'write-blog',
+          title,
+          tone,
+          keywords: keywords || undefined,
+          customInstructions: customInstructions || undefined,
+          targetLength,
+          model,
+        }),
       });
-      setBlogContent(data.blogContent);
-      setModelUsed(data.modelUsed);
-    } catch (err: unknown) { setError(err instanceof Error ? err.message : 'Error'); }
-    setLoading(false);
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'AI request failed');
+      }
+      const data = await res.json();
+      setBlogContent(data.blogContent || '');
+      setModelUsed(data.modelUsed || null);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error');
+    }
+    setIsStreaming(false);
   };
 
   const handlePublish = async () => {
     setPublishing(true); setError(null); setPublishResult(null);
     try {
-      const tagList = tags.split(',').map(t => t.trim()).filter(Boolean);
       const result = await callPublish({
         title,
         description: `AI-generated blog post about ${title}`,
         content: blogContent,
-        tags: tagList.length > 0 ? tagList : ['Digital Marketing'],
+        tags: keywords ? keywords.split(',').map(k => k.trim()).filter(Boolean) : ['Digital Marketing'],
         published: scheduleMode ? false : autoPublish,
         scheduleAt: scheduleMode && scheduleDate ? new Date(scheduleDate).toISOString() : undefined,
       });
@@ -266,120 +334,272 @@ function BlogWriter({ model }: { model?: string }) {
     setPublishing(false);
   };
 
-  return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
-      <p className="text-sm text-zinc-500">
-        Enter a blog title and let AI write a complete, publish-ready blog post.
-        It automatically adds a footer with your LinkedIn, email, and portfolio links.
-      </p>
+  const handleRepurpose = async () => {
+    if (!blogContent) return;
+    setRepurposing(true); setRepurposeResult(null);
+    try {
+      const data = await callAI<{ repurpose: { social: string; email: string; thread: string }; modelUsed: string }>({
+        action: 'repurpose',
+        title,
+        content: blogContent.slice(0, 3000),
+        model,
+      });
+      setRepurposeResult(data.repurpose);
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : 'Error'); }
+    setRepurposing(false);
+  };
 
-      <form onSubmit={handleGenerate} className="space-y-3">
-        <Field label="Blog Title">
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            placeholder="e.g. 10 Meta Ad Strategies That Tripled My ROAS in 2024"
-            className={inputCls}
-          />
-        </Field>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label="Tags (comma-separated)">
+  const handleRegenerate = () => {
+    const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+    handleGenerate(fakeEvent);
+  };
+
+  return (
+    <section className="space-y-5">
+      {/* Input Card */}
+      <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-4">
+        <div className="flex items-center gap-2 mb-1">
+          <PencilSquareIcon className="w-4 h-4 text-violet-400" />
+          <p className="text-sm font-medium text-zinc-300">Write a publish-ready blog post with AI</p>
+        </div>
+
+        <form onSubmit={handleGenerate} className="space-y-3">
+          <Field label="Blog Title *">
             <input
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              placeholder="e.g. Meta Ads, ROAS, Digital Marketing"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              placeholder="e.g. 10 Meta Ad Strategies That Tripled My ROAS in 2024"
               className={inputCls}
+              disabled={isStreaming}
             />
           </Field>
-          <Field label="Writing Tone">
-            <select value={tone} onChange={(e) => setTone(e.target.value)} className={selectCls}>
-              {TONES_BLOG.map((t) => (
-                <option key={t}>{t}</option>
-              ))}
-            </select>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <Field label="Writing Tone">
+              <select value={tone} onChange={(e) => setTone(e.target.value)} className={selectCls} disabled={isStreaming}>
+                {TONES_BLOG.map((t) => <option key={t}>{t}</option>)}
+              </select>
+            </Field>
+            <Field label="Target Length">
+              <select value={targetLength} onChange={(e) => setTargetLength(e.target.value)} className={selectCls} disabled={isStreaming}>
+                {WORD_COUNT_OPTIONS.map((o) => <option key={o} value={o}>{o} words</option>)}
+              </select>
+            </Field>
+          </div>
+
+          <Field label="Keywords / Tags (comma-separated)">
+            <input
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+              placeholder="e.g. Meta Ads, ROAS, digital marketing, e-commerce"
+              className={inputCls}
+              disabled={isStreaming}
+            />
           </Field>
-        </div>
-        <div className="flex items-center justify-between">
-          <SubmitBtn loading={loading} label="Write Blog Post" />
-          {modelUsed && <ModelBadge model={modelUsed} />}
-        </div>
-      </form>
+
+          {/* Advanced Options Toggle */}
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+          >
+            <AdjustmentsHorizontalIcon className="w-3.5 h-3.5" />
+            {showAdvanced ? 'Hide' : 'Show'} advanced options
+          </button>
+
+          {showAdvanced && (
+            <Field label="Custom Instructions (optional)">
+              <textarea
+                value={customInstructions}
+                onChange={(e) => setCustomInstructions(e.target.value)}
+                rows={3}
+                placeholder="e.g. Include a case study from Bacha Toys. Mention Pakistan's e-commerce growth. Add statistics where possible. Write a personal anecdote in the intro."
+                className={clsx(inputCls, 'resize-none')}
+                disabled={isStreaming}
+              />
+            </Field>
+          )}
+
+          <div className="flex items-center justify-between pt-1">
+            <button
+              type="submit"
+              disabled={isStreaming || !title.trim()}
+              className="rounded-xl bg-violet-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-violet-600/20"
+            >
+              {isStreaming ? <><Spinner /> Writing&hellip;</> : <><SparklesIcon className="w-4 h-4" /> Write Blog Post</>}
+            </button>
+            {modelUsed && <ModelBadge model={modelUsed} />}
+          </div>
+        </form>
+      </div>
 
       {error && <ErrorBox message={error} />}
 
+      {/* Generated Content Card */}
       {blogContent && (
-        <div className="space-y-4">
-          {/* Preview */}
-          <div className="rounded-xl border border-zinc-700 bg-zinc-900 overflow-hidden">
-            <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2">
-              <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Blog Preview (Markdown)</span>
-              <CopyButton text={blogContent} />
+        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 overflow-hidden">
+          {/* Content Toolbar */}
+          <div className="flex items-center justify-between px-5 py-2.5 border-b border-zinc-800/60 bg-zinc-900/60">
+            <div className="flex items-center gap-2">
+              {/* View mode tabs */}
+              {(['preview', 'edit', 'markdown'] as const).map((mode) => (
+                <button
+                  key={mode}
+                  className={clsx(
+                    'text-xs font-semibold px-3 py-1.5 rounded-lg capitalize transition-all',
+                    previewMode === mode
+                      ? 'bg-violet-600 text-white shadow-sm'
+                      : 'bg-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700',
+                  )}
+                  onClick={() => setPreviewMode(mode)}
+                >
+                  {mode}
+                </button>
+              ))}
             </div>
-            <div className="max-h-[500px] overflow-y-auto p-4">
-              <pre className="text-sm text-zinc-300 whitespace-pre-wrap font-sans leading-relaxed">{blogContent}</pre>
+            <div className="flex items-center gap-3">
+              {/* Stats */}
+              <div className="hidden sm:flex items-center gap-3 text-[11px] text-zinc-500">
+                <span className="flex items-center gap-1"><DocumentTextIcon className="w-3 h-3" />{wordCount.toLocaleString()} words</span>
+                <span className="flex items-center gap-1"><BookOpenIcon className="w-3 h-3" />{readingTime} min read</span>
+                <span>{charCount.toLocaleString()} chars</span>
+              </div>
+              <CopyButton text={blogContent} />
             </div>
           </div>
 
-          {/* Publish controls */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-800/30 p-4 space-y-3">
-            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Publish to Notion</p>
-
-            <div className="flex flex-wrap items-center gap-4">
-              <label className="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={autoPublish && !scheduleMode}
-                  onChange={(e) => { setAutoPublish(e.target.checked); if (e.target.checked) setScheduleMode(false); }}
-                  className="rounded border-zinc-600 bg-zinc-800 text-violet-500 focus:ring-violet-500"
-                />
-                Publish immediately
-              </label>
-              <label className="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={scheduleMode}
-                  onChange={(e) => { setScheduleMode(e.target.checked); if (e.target.checked) setAutoPublish(false); }}
-                  className="rounded border-zinc-600 bg-zinc-800 text-violet-500 focus:ring-violet-500"
-                />
-                Schedule for later
-              </label>
-            </div>
-
-            {scheduleMode && (
-              <Field label="Schedule Date & Time">
-                <input
-                  type="datetime-local"
-                  value={scheduleDate}
-                  onChange={(e) => setScheduleDate(e.target.value)}
-                  className={inputCls}
-                  required
-                />
-              </Field>
+          {/* Content Area */}
+          <div className="overflow-y-auto max-h-[520px]">
+            {previewMode === 'preview' ? (
+              <div
+                className="prose prose-invert max-w-none p-6 text-zinc-100"
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(blogContent) }}
+              />
+            ) : previewMode === 'edit' ? (
+              <textarea
+                ref={contentRef}
+                value={blogContent}
+                onChange={(e) => setBlogContent(e.target.value)}
+                className="w-full min-h-[500px] bg-transparent p-6 text-sm text-zinc-200 font-mono leading-relaxed focus:outline-none resize-none"
+                spellCheck
+              />
+            ) : (
+              <pre className="text-sm text-zinc-300 whitespace-pre-wrap font-mono leading-relaxed p-6">{blogContent}</pre>
             )}
+          </div>
 
+          {/* Action Bar */}
+          <div className="flex items-center justify-between px-5 py-2.5 border-t border-zinc-800/60 bg-zinc-900/60">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleRegenerate}
+                disabled={isStreaming || !title.trim()}
+                className="flex items-center gap-1.5 rounded-lg border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-all disabled:opacity-40"
+              >
+                <ArrowPathIcon className="w-3.5 h-3.5" /> Regenerate
+              </button>
+              <button
+                onClick={handleRepurpose}
+                disabled={repurposing || !blogContent}
+                className="flex items-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-500/10 px-3 py-1.5 text-xs font-medium text-violet-400 hover:bg-violet-500/20 transition-all disabled:opacity-40"
+              >
+                {repurposing ? <><Spinner /> Repurposing...</> : <><DocumentDuplicateIcon className="w-3.5 h-3.5" /> Repurpose Content</>}
+              </button>
+            </div>
+            <div className="sm:hidden flex items-center gap-2 text-[11px] text-zinc-500">
+              <span>{wordCount} words</span>
+              <span>{readingTime} min</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Repurpose Results */}
+      {repurposeResult && (
+        <div className="rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <DocumentDuplicateIcon className="w-4 h-4 text-violet-400" />
+            <p className="text-sm font-semibold text-violet-300">Repurposed Content</p>
+          </div>
+          <div className="grid grid-cols-1 gap-3">
+            <ResultBlock label="LinkedIn / Social Post" copyText={repurposeResult.social}>
+              <p className="text-sm text-zinc-200 leading-relaxed whitespace-pre-wrap">{repurposeResult.social}</p>
+            </ResultBlock>
+            <ResultBlock label="Email Newsletter Snippet" copyText={repurposeResult.email}>
+              <p className="text-sm text-zinc-200 leading-relaxed whitespace-pre-wrap">{repurposeResult.email}</p>
+            </ResultBlock>
+            <ResultBlock label="Twitter/X Thread" copyText={repurposeResult.thread}>
+              <p className="text-sm text-zinc-200 leading-relaxed whitespace-pre-wrap">{repurposeResult.thread}</p>
+            </ResultBlock>
+          </div>
+        </div>
+      )}
+
+      {/* Publish Controls */}
+      {blogContent && (
+        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <ClipboardDocumentCheckIcon className="w-4 h-4 text-emerald-400" />
+            <p className="text-sm font-semibold text-zinc-300">Publish to Notion</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <label className="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={autoPublish && !scheduleMode}
+                onChange={(e) => { setAutoPublish(e.target.checked); if (e.target.checked) setScheduleMode(false); }}
+                className="rounded border-zinc-600 bg-zinc-800 text-violet-500 focus:ring-violet-500"
+              />
+              Publish immediately
+            </label>
+            <label className="flex items-center gap-2 text-sm text-zinc-300 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={scheduleMode}
+                onChange={(e) => { setScheduleMode(e.target.checked); if (e.target.checked) setAutoPublish(false); }}
+                className="rounded border-zinc-600 bg-zinc-800 text-violet-500 focus:ring-violet-500"
+              />
+              Schedule for later
+            </label>
+          </div>
+
+          {scheduleMode && (
+            <Field label="Schedule Date & Time">
+              <input
+                type="datetime-local"
+                value={scheduleDate}
+                onChange={(e) => setScheduleDate(e.target.value)}
+                className={inputCls}
+                required
+              />
+            </Field>
+          )}
+
+          <div className="flex items-center gap-3">
             <button
               onClick={handlePublish}
               disabled={publishing || (scheduleMode && !scheduleDate)}
-              className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+              className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-emerald-600/20"
             >
               {publishing ? <><Spinner /> Publishing...</> : scheduleMode ? 'Schedule Post' : 'Publish to Notion'}
             </button>
-
-            {publishResult && (
-              <div className="rounded-xl px-4 py-3 text-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 space-y-1">
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="w-4 h-4" />
-                  {publishResult.scheduledFor
-                    ? `Scheduled for ${new Date(publishResult.scheduledFor).toLocaleString()}`
-                    : 'Published successfully!'}
-                </div>
-                <a href={publishResult.url} target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-300 hover:underline">
-                  {publishResult.url}
-                </a>
-              </div>
-            )}
           </div>
+
+          {publishResult && (
+            <div className="rounded-xl px-4 py-3 text-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 space-y-1">
+              <div className="flex items-center gap-2">
+                <CheckCircleIcon className="w-4 h-4" />
+                {publishResult.scheduledFor
+                  ? `Scheduled for ${new Date(publishResult.scheduledFor).toLocaleString()}`
+                  : 'Published successfully!'}
+              </div>
+              <a href={publishResult.url} target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-300 hover:underline">
+                {publishResult.url}
+              </a>
+            </div>
+          )}
         </div>
       )}
     </section>
@@ -408,7 +628,7 @@ function ContentIdeas({ model }: { model?: string }) {
   };
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-5">
       <p className="text-sm text-zinc-500">Get 7 digital marketing blog post ideas tailored to attract brand owners and fellow marketers.</p>
       <form onSubmit={handleSubmit} className="flex gap-2">
         <input value={topic} onChange={e => setTopic(e.target.value)} required placeholder="e.g. Instagram Ads ROI, content batching, Shopify SEO" className={clsx(inputCls, 'flex-1')} />
@@ -471,7 +691,7 @@ function OutlineBuilder({ model }: { model?: string }) {
   ].join('\n') : '';
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-5">
       <p className="text-sm text-zinc-500">Generate a structured blog post outline tailored for a digital marketing audience.</p>
       <form onSubmit={handleSubmit} className="flex gap-2">
         <input value={topic} onChange={e => setTopic(e.target.value)} required placeholder="e.g. How to run Meta Ads for an e-commerce brand" className={clsx(inputCls, 'flex-1')} />
@@ -527,7 +747,7 @@ function SeoOptimizer({ model }: { model?: string }) {
   };
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-5">
       <p className="text-sm text-zinc-500">Optimise your blog post for search with an SEO title, meta description, and keyword set.</p>
       <form onSubmit={handleSubmit} className="space-y-3">
         <input value={title} onChange={e => setTitle(e.target.value)} required placeholder="Post title (required)" className={inputCls} />
@@ -586,7 +806,7 @@ function SocialCaptions({ model }: { model?: string }) {
   };
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-5">
       <p className="text-sm text-zinc-500">Generate a platform-optimised social media post caption for any of your brand campaigns.</p>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -654,7 +874,7 @@ function AdCopyGenerator({ model }: { model?: string }) {
   };
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-5">
       <p className="text-sm text-zinc-500">Generate conversion-focused ad copy for your paid campaigns with headlines, body text, and CTA variants.</p>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -746,7 +966,7 @@ function HashtagGenerator({ model }: { model?: string }) {
   const allTags = result ? [...result.highVolume, ...result.midVolume, ...result.niche, ...result.branded].join(' ') : '';
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-5">
       <p className="text-sm text-zinc-500">Get a strategic hashtag set split by volume tier — maximise reach without looking spammy.</p>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -825,7 +1045,7 @@ function EmailNewsletter({ model }: { model?: string }) {
   const fullEmail = result ? `Subject: ${result.subjectLine}\nPreheader: ${result.preheader}\n\n${result.greeting}\n\n${result.body}\n\n${result.cta}\n\n${result.signOff}` : '';
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-5">
       <p className="text-sm text-zinc-500">Draft a complete marketing email in seconds — subject line, body copy, CTA and sign-off included.</p>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -896,6 +1116,7 @@ function ScheduledPosts() {
   const [error, setError] = useState<string | null>(null);
   const [triggerLoading, setTriggerLoading] = useState(false);
   const [triggerResult, setTriggerResult] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState<string | null>(null);
 
   const loadPosts = useCallback(async () => {
     try {
@@ -915,6 +1136,28 @@ function ScheduledPosts() {
     loadPosts();
   };
 
+  const handlePostNow = async (id: string, title: string) => {
+    if (!confirm(`Publish "${title}" now?`)) return;
+    setPublishingId(id); setTriggerResult(null);
+    try {
+      const res = await fetch('/api/dashboard/ai/scheduled-posts', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTriggerResult(data.error || 'Failed to publish');
+      } else {
+        setTriggerResult(data.message || 'Published successfully!');
+        loadPosts();
+      }
+    } catch (err: unknown) {
+      setTriggerResult(err instanceof Error ? err.message : 'Error');
+    }
+    setPublishingId(null);
+  };
+
   const handleTriggerCron = async () => {
     setTriggerLoading(true); setTriggerResult(null);
     try {
@@ -922,8 +1165,12 @@ function ScheduledPosts() {
         headers: { 'Content-Type': 'application/json' },
       });
       const data = await res.json();
-      setTriggerResult(data.message || `Published: ${data.published}, Failed: ${data.failed}`);
-      loadPosts();
+      if (!res.ok) {
+        setTriggerResult(data.error || 'Failed to run publisher');
+      } else {
+        setTriggerResult(data.message || `Published: ${data.published ?? 0}, Failed: ${data.failed ?? 0}`);
+        loadPosts();
+      }
     } catch (err: unknown) {
       setTriggerResult(err instanceof Error ? err.message : 'Error');
     }
@@ -937,7 +1184,7 @@ function ScheduledPosts() {
   };
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 space-y-5">
+    <section className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-5">
       <div className="flex items-center justify-between">
         <p className="text-sm text-zinc-500">View and manage scheduled blog posts. Pending posts will be published when their scheduled time arrives.</p>
         <button
@@ -981,12 +1228,30 @@ function ScheduledPosts() {
                 </div>
               </div>
               {post.status === 'pending' && (
-                <button
-                  onClick={() => handleDelete(post._id)}
-                  className="text-xs text-zinc-500 hover:text-red-400 transition-colors flex-shrink-0"
-                >
-                  Cancel
-                </button>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    onClick={() => handlePostNow(post._id, post.title)}
+                    disabled={publishingId === post._id}
+                    className="flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 text-[11px] font-medium text-emerald-400 hover:bg-emerald-500/20 transition-all disabled:opacity-40"
+                  >
+                    {publishingId === post._id ? (
+                      <><Spinner /> Publishing...</>
+                    ) : (
+                      <>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                        Post Now
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(post._id)}
+                    className="text-[11px] text-zinc-500 hover:text-red-400 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
               )}
             </div>
           ))}
@@ -1007,9 +1272,9 @@ function ResultBlock({ label, children, meta, metaWarn, copyText }: {
   copyText?: string;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-800/30 px-4 py-3">
+    <div className="rounded-xl border border-zinc-800/60 bg-zinc-800/20 px-4 py-3">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">{label}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">{label}</p>
         <div className="flex items-center gap-2">
           {meta && <span className={clsx('text-[10px] tabular-nums', metaWarn ? 'text-amber-400' : 'text-zinc-600')}>{meta}</span>}
           {copyText && <CopyButton text={copyText} />}

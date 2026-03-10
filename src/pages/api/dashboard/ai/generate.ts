@@ -269,27 +269,36 @@ Return ONLY valid JSON in this exact format (no markdown, no extra text):
       return res.status(200).json({ email, modelUsed });
     }
 
-    /* ─── 9. Full blog writer ─── */
+    /* ─── 9. Full blog writer (upgraded) ─── */
     if (action === 'write-blog') {
-      const { title, tags, tone } = req.body as { title: string; tags?: string; tone?: string };
+      const { title, tags, tone, keywords, customInstructions, targetLength } = req.body as {
+        title: string; tags?: string; tone?: string; keywords?: string;
+        customInstructions?: string; targetLength?: string;
+      };
       if (!title?.trim()) return res.status(400).json({ error: '"title" is required.' });
+
+      const wordRange = targetLength || '1500-2500';
+      const keywordList = keywords || tags || '';
 
       const prompt = `${PERSONA}
 Write a complete, high-quality blog post with the title: "${title}"
-${tags ? `Related tags/topics: ${tags}` : ''}
+${keywordList ? `Target keywords/topics to naturally weave in: ${keywordList}` : ''}
 ${tone ? `Writing tone: ${tone}` : 'Writing tone: professional, insightful, and actionable'}
 
 The blog should be written for digital marketers, brand owners, and social media managers.
 
 Requirements:
-- Start with a compelling introduction that hooks the reader
+- Start with a compelling hook — a surprising stat, bold statement, or relatable scenario
 - Include 4-6 main sections with clear headings (use ## for headings)
-- Each section should have 2-4 paragraphs of substantive content
-- Include practical tips, examples, and actionable advice
-- Use bullet points or numbered lists where appropriate
-- End with a strong conclusion and call-to-action
-- Total length: 1500-2500 words
-- Write in Markdown format
+- Each section should have 2-4 paragraphs of substantive, original content
+- Include practical tips, real-world examples, data points, and actionable advice
+- Use bullet points or numbered lists where appropriate for readability
+- Add a "Key Takeaways" or "TL;DR" section before the conclusion with 3-5 bullet points
+- End with a strong conclusion and clear call-to-action
+- Target length: ${wordRange} words
+- Write in clean Markdown format
+- Make paragraphs scannable — no wall of text
+${customInstructions ? `\nAdditional instructions from the author:\n${customInstructions}` : ''}
 
 DO NOT include the title at the top (it will be added separately).
 DO NOT include any footer or author bio (it will be added automatically).
@@ -301,6 +310,34 @@ Return ONLY the blog post content in Markdown format. No JSON wrapping.`;
       const blogWithFooter = blogContent + BLOG_FOOTER;
 
       return res.status(200).json({ blogContent: blogWithFooter, modelUsed });
+    }
+
+    /* ─── 10. Content repurpose ─── */
+    if (action === 'repurpose') {
+      const { title, content } = req.body as { title: string; content: string };
+      if (!content?.trim()) return res.status(400).json({ error: '"content" is required.' });
+
+      const prompt = `${PERSONA}
+You are a content repurposing expert. Given the following blog post titled "${title || 'Untitled'}", create THREE pieces of repurposed content:
+
+BLOG CONTENT (first 3000 chars):
+${content.slice(0, 3000)}
+
+Create:
+1. **LinkedIn/Social Post** — A compelling 150-250 word post that extracts the key insight from the blog, starts with a hook, uses line breaks for readability, and ends with a CTA. Include 3-5 relevant hashtags at the end.
+2. **Email Newsletter Snippet** — A 100-150 word teaser for an email newsletter that makes subscribers want to click through to read the full blog. Include a subject line suggestion at the top.
+3. **Twitter/X Thread** — A 5-7 tweet thread (each tweet under 280 characters) that breaks down the blog's main points. Number each tweet (1/, 2/, etc). Make the first tweet a hook.
+
+Return ONLY valid JSON in this exact format (no markdown, no extra text):
+{
+  "social": "The LinkedIn post text here",
+  "email": "Subject: ...\n\nThe email snippet here",
+  "thread": "1/ First tweet\n\n2/ Second tweet\n\n3/ Third tweet..."
+}`;
+
+      const { text, modelUsed } = await generateWithFallback(prompt, preferredModel);
+      const repurpose = parseJsonFromText<{ social: string; email: string; thread: string }>(text);
+      return res.status(200).json({ repurpose, modelUsed });
     }
 
     return res.status(400).json({ error: `Unknown action "${action}".` });

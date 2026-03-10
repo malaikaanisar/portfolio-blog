@@ -118,23 +118,23 @@ function StatCard({
   icon: React.ReactNode;
   color?: 'primary' | 'emerald' | 'amber' | 'blue' | 'purple';
 }) {
-  const colorClasses: Record<string, string> = {
-    primary: 'bg-primary/10 text-primary',
-    emerald: 'bg-emerald-500/10 text-emerald-400',
-    amber: 'bg-amber-500/10 text-amber-400',
-    blue: 'bg-blue-500/10 text-blue-400',
-    purple: 'bg-purple-500/10 text-purple-400',
+  const colorClasses: Record<string, { icon: string; border: string }> = {
+    primary: { icon: 'bg-primary/10 text-primary', border: 'border-l-primary/40' },
+    emerald: { icon: 'bg-emerald-500/10 text-emerald-400', border: 'border-l-emerald-500/40' },
+    amber: { icon: 'bg-amber-500/10 text-amber-400', border: 'border-l-amber-500/40' },
+    blue: { icon: 'bg-blue-500/10 text-blue-400', border: 'border-l-blue-500/40' },
+    purple: { icon: 'bg-purple-500/10 text-purple-400', border: 'border-l-purple-500/40' },
   };
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5">
+    <div className={`rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 border-l-2 ${colorClasses[color].border} hover:bg-zinc-900/60 transition-colors`}>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">{label}</p>
-          <p className="mt-2 text-3xl font-bold text-zinc-100">{value}</p>
-          {subtitle && <p className="mt-1 text-xs text-emerald-400">{subtitle}</p>}
+          <p className="mt-2 text-2xl font-bold text-zinc-100 tracking-tight">{value}</p>
+          {subtitle && <p className="mt-1 text-[11px] text-emerald-400 font-medium">{subtitle}</p>}
         </div>
-        <div className={`rounded-xl p-2.5 ${colorClasses[color]}`}>{icon}</div>
+        <div className={`rounded-xl p-2.5 ${colorClasses[color].icon}`}>{icon}</div>
       </div>
     </div>
   );
@@ -153,9 +153,9 @@ function SectionCard({
   className?: string;
 }) {
   return (
-    <div className={`rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 ${className}`}>
+    <div className={`rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 ${className}`}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-zinc-100">{title}</h3>
+        <h3 className="text-[13px] font-semibold text-zinc-200 tracking-tight">{title}</h3>
         {action}
       </div>
       {children}
@@ -289,16 +289,19 @@ export default function DashboardOverview() {
       <Head><title>Dashboard — Malaika Nisar</title></Head>
 
       {/* Greeting */}
-      <div className="mb-8 flex items-end justify-between">
+      <div className="mb-6 flex items-end justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-zinc-100">
-            Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'} 👋
+          <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
+            Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, Malaika
           </h2>
-          <p className="mt-1 text-sm text-zinc-500">Here&apos;s what&apos;s happening with your site.</p>
+          <p className="mt-1 text-[13px] text-zinc-500">
+            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+            {' — '}Here&apos;s what&apos;s happening with your site.
+          </p>
         </div>
         <button
           onClick={fetchData}
-          className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1.5"
+          className="text-[11px] text-zinc-500 hover:text-zinc-300 transition-all flex items-center gap-1.5 rounded-lg border border-zinc-800/80 px-2.5 py-1.5 hover:bg-white/[0.04]"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
@@ -307,9 +310,39 @@ export default function DashboardOverview() {
         </button>
       </div>
 
+      {/* AI Quick Actions Bar */}
+      <div className="mb-6 rounded-2xl border border-violet-500/15 bg-gradient-to-r from-violet-500/[0.04] via-fuchsia-500/[0.03] to-violet-500/[0.04] p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <svg className="w-4 h-4 text-violet-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+          </svg>
+          <p className="text-[13px] font-semibold text-violet-300">AI Quick Actions</p>
+          <span className="text-[10px] text-zinc-500 ml-auto">Powered by Gemini</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {[
+            { href: '/dashboard/ai', label: 'Write Blog Post', icon: 'M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z', color: 'text-violet-400 bg-violet-500/10 border-violet-500/20 hover:bg-violet-500/20' },
+            { href: '/dashboard/ai?tab=social', label: 'Social Caption', icon: 'M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z', color: 'text-blue-400 bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20' },
+            { href: '/dashboard/ai?tab=seo', label: 'SEO Optimize', icon: 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20' },
+            { href: '/dashboard/ai?tab=ad', label: 'Generate Ad Copy', icon: 'M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/20' },
+          ].map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-medium transition-all ${action.color}`}
+            >
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d={action.icon} />
+              </svg>
+              {action.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Analytics Stats Cards */}
       {gaConfigured && analytics?.overview ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <StatCard
             label="Visitors"
             value={analytics.overview.activeUsers.toLocaleString()}
@@ -358,7 +391,7 @@ export default function DashboardOverview() {
       ) : null}
 
       {/* Content Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <StatCard
           label="Total Blogs"
           value={blogStats?.totalBlogs || 0}
@@ -600,14 +633,20 @@ export default function DashboardOverview() {
           <SectionCard title="Quick Actions">
             <div className="space-y-1.5">
               {[
+                { href: '/dashboard/ai', label: 'Write with AI', icon: 'M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z', highlight: true },
                 { href: '/dashboard/blogs', label: 'Manage blogs', icon: 'M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25' },
                 { href: '/dashboard/comments', label: 'Moderate comments', icon: 'M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155' },
                 { href: '/dashboard/drafts', label: 'Save a new idea', icon: 'M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18' },
-              ].map((action) => (
+                { href: '/dashboard/ai?tab=ideas', label: 'Get content ideas', icon: 'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z' },
+              ].map((action: any) => (
                 <Link
                   key={action.href}
                   href={action.href}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-all"
+                  className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs transition-all ${
+                    action.highlight
+                      ? 'text-violet-400 hover:text-violet-300 hover:bg-violet-500/10 font-medium'
+                      : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800'
+                  }`}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d={action.icon} />

@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ObjectId } from 'mongodb';
+import { Client } from '@notionhq/client';
 import { withAuth } from '../../../../lib/auth';
 import { connectToDatabase } from '../../../../lib/mongodb';
+
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { db } = await connectToDatabase();
@@ -23,6 +26,41 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(404).json({ error: 'Scheduled post not found.' });
     }
     return res.status(200).json({ success: true });
+  }
+
+  // PUT: Publish a single post immediately ("Post Now")
+  if (req.method === 'PUT') {
+    const { id } = req.body as { id: string };
+    if (!id) return res.status(400).json({ error: '"id" is required.' });
+
+    if (!process.env.NOTION_TOKEN) {
+      return res.status(503).json({ error: 'Notion API credentials are not configured.' });
+    }
+
+    const post = await collection.findOne({ _id: new ObjectId(id) });
+    if (!post) return res.status(404).json({ error: 'Scheduled post not found.' });
+    if (post.status === 'published') return res.status(400).json({ error: 'Post is already published.' });
+
+    try {
+      await notion.pages.update({
+        page_id: post.notionPageId,
+        properties: { published: { checkbox: true } },
+      });
+
+      await collection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { status: 'published', publishedAt: new Date() } },
+      );
+
+      return res.status(200).json({ success: true, message: `"${post.title}" published successfully.` });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      await collection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { status: 'failed', error: message, failedAt: new Date() } },
+      );
+      return res.status(500).json({ error: `Failed to publish: ${message}` });
+    }
   }
 
   // PATCH: Update schedule time

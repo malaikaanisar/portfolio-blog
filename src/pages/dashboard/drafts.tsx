@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import clsx from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
 import { DashboardLayout } from '../../components/dashboard/DashboardLayout';
@@ -109,28 +110,39 @@ export default function DashboardDrafts() {
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <p className="text-sm text-zinc-500">
-          {drafts.length} draft{drafts.length !== 1 ? 's' : ''} saved
+        <p className="text-[13px] text-zinc-500">
+          <span className="text-zinc-300 font-medium">{drafts.length}</span> draft{drafts.length !== 1 ? 's' : ''} saved
         </p>
-        <button
-          onClick={() => {
-            if (showForm) resetForm();
-            else setShowForm(true);
-          }}
-          className={clsx(
-            'rounded-xl px-4 py-2 text-xs font-semibold transition-all',
-            showForm
-              ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-              : 'bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25',
-          )}
-        >
-          {showForm ? 'Cancel' : '+ New Draft'}
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/dashboard/ai?tab=ideas"
+            className="flex items-center gap-1.5 rounded-xl border border-violet-500/20 bg-violet-500/8 px-3 py-2 text-[11px] font-medium text-violet-400 hover:bg-violet-500/15 transition-all"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+            </svg>
+            AI Ideas
+          </Link>
+          <button
+            onClick={() => {
+              if (showForm) resetForm();
+              else setShowForm(true);
+            }}
+            className={clsx(
+              'rounded-xl px-4 py-2 text-xs font-semibold transition-all',
+              showForm
+                ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                : 'bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25',
+            )}
+          >
+            {showForm ? 'Cancel' : '+ New Draft'}
+          </button>
+        </div>
       </div>
 
       {/* Form */}
       {showForm && (
-        <div className="mb-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 space-y-4">
+        <div className="mb-6 rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-5 space-y-4">
           <input
             type="text"
             placeholder="Title"
@@ -199,7 +211,7 @@ export default function DashboardDrafts() {
             return (
               <div
                 key={draft._id}
-                className="group rounded-2xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-900/80 p-5 transition-all"
+                className="group rounded-2xl border border-zinc-800/80 bg-zinc-900/40 hover:bg-zinc-900/60 p-5 transition-all duration-150"
               >
                 <div className="flex items-start justify-between mb-2">
                   <span className={clsx('rounded-full px-2 py-0.5 text-[10px] font-semibold', catStyle.color)}>
