@@ -1110,6 +1110,21 @@ interface ScheduledPost {
   createdAt: string;
 }
 
+function formatTimeRemaining(scheduledFor: string): string {
+  const now = Date.now();
+  const target = new Date(scheduledFor).getTime();
+  const diff = target - now;
+  if (diff <= 0) return 'Due now';
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0 || parts.length === 0) parts.push(`${minutes}m`);
+  return parts.join(' ') + ' remaining';
+}
+
 function ScheduledPosts() {
   const [posts, setPosts] = useState<ScheduledPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1224,6 +1239,11 @@ function ScheduledPosts() {
                       ? `Scheduled for ${new Date(post.scheduledFor).toLocaleString()}`
                       : `Created ${new Date(post.createdAt).toLocaleDateString()}`}
                   </span>
+                  {post.status === 'pending' && (
+                    <span className="text-[10px] font-medium text-amber-400/80 bg-amber-500/5 px-1.5 py-0.5 rounded">
+                      {formatTimeRemaining(post.scheduledFor)}
+                    </span>
+                  )}
                   {post.error && <span className="text-[11px] text-red-400 truncate max-w-[200px]">{post.error}</span>}
                 </div>
               </div>

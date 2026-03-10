@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/dashboard/ai/schedule-cron?secret=${CRON_SECRET}",
+      "schedule": "*/10 * * * *"
+    }
+  ]
+}
